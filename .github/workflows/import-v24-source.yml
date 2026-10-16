@@ -18,7 +18,7 @@ jobs:
       - name: Download V24.2 source archive
         run: |
           python -m pip install --upgrade gdown
-          gdown --id 1_PZ3Mq5X8mILvFCVInEE1MAc_zG7DWre -O /tmp/chefpulse-v24.2.zip
+          gdown 'https://drive.google.com/uc?id=1_PZ3Mq5X8mILvFCVInEE1MAc_zG7DWre' -O /tmp/chefpulse-v24.2.zip
 
       - name: Extract source
         run: |
