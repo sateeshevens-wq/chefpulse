@@ -1,0 +1,41 @@
+name: Import V24 source from Google Drive
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  import-source:
+    if: ${{ !startsWith(github.event.head_commit.message, 'Import V24 source') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download V24.2 source archive
+        run: |
+          python -m pip install --upgrade gdown
+          gdown --id 1_PZ3Mq5X8mILvFCVInEE1MAc_zG7DWre -O /tmp/chefpulse-v24.2.zip
+
+      - name: Extract source
+        run: |
+          rm -rf /tmp/chefpulse-v24.2
+          mkdir -p /tmp/chefpulse-v24.2
+          unzip -q /tmp/chefpulse-v24.2.zip -d /tmp/chefpulse-v24.2
+          test -f /tmp/chefpulse-v24.2/package.json
+          test -d /tmp/chefpulse-v24.2/src
+          test -d /tmp/chefpulse-v24.2/server
+          cp -a /tmp/chefpulse-v24.2/. .
+          rm -f /tmp/chefpulse-v24.2.zip
+          rm -rf /tmp/chefpulse-v24.2
+
+      - name: Commit imported V24 source
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Import V24 source from Drive" || exit 0
+          git push origin main
