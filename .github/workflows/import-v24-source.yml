@@ -28,6 +28,9 @@ jobs:
           test -f /tmp/chefpulse-v24.2/package.json
           test -d /tmp/chefpulse-v24.2/src
           test -d /tmp/chefpulse-v24.2/server
+          # GitHub's Actions token cannot create/update workflow files.
+          # Keep the repository's existing workflow files and import the app source.
+          rm -rf /tmp/chefpulse-v24.2/.github/workflows
           cp -a /tmp/chefpulse-v24.2/. .
           rm -f /tmp/chefpulse-v24.2.zip
           rm -rf /tmp/chefpulse-v24.2
