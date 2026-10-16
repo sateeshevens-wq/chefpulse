@@ -1,0 +1,10 @@
+{
+  "name": "ChefPulse Bengaluru - Uber for Chefs & Hospitality Marketplace",
+  "description": "Two-sided culinary marketplace for Bangalore: hyper-local on-demand SOS home chefs, luxury event catering, restaurant shift staffing, and B2B job board.",
+  "requestFramePermissions": [
+    "geolocation"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

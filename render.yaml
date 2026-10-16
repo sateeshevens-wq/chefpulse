@@ -1,0 +1,44 @@
+services:
+  - type: web
+    name: chefpulse-staging
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /api/health/live
+    autoDeploy: false
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: DATABASE_DRIVER
+        value: postgres
+      - key: DATABASE_URL
+        sync: false
+      - key: DATABASE_SSL
+        value: true
+      - key: DATABASE_SSL_REJECT_UNAUTHORIZED
+        value: true
+      - key: JWT_SECRET
+        sync: false
+      - key: CORS_ORIGIN
+        sync: false
+      - key: TRUST_PROXY
+        value: true
+      - key: PAYMENT_PROVIDER
+        value: razorpay
+      - key: ALLOW_PAYMENT_SIMULATION
+        value: false
+      - key: RAZORPAY_KEY_ID
+        sync: false
+      - key: RAZORPAY_KEY_SECRET
+        sync: false
+      - key: PAYMENT_WEBHOOK_SECRET
+        sync: false
+      - key: OTP_PROVIDER
+        value: none
+      - key: EXOTEL_ACCOUNT_SID
+        sync: false
+      - key: EXOTEL_VERIFY_APP_ID
+        sync: false
+      - key: EXOTEL_VERIFY_APP_SECRET
+        sync: false
