@@ -32,19 +32,13 @@ jobs:
           # Keep the repository's existing workflow files and import the app source.
           rm -rf /tmp/chefpulse-v24.2/.github/workflows
           cp -a /tmp/chefpulse-v24.2/. .
-
-          # Keep Vite 8 compatible with its required esbuild peer dependency.
-          python - <<'PY'
-          import json
-          from pathlib import Path
-          p = Path('package.json')
-          data = json.loads(p.read_text())
-          data.setdefault('devDependencies', {})['esbuild'] = '^0.28.2'
-          p.write_text(json.dumps(data, indent=2) + '\n')
-          PY
-
           rm -f /tmp/chefpulse-v24.2.zip
           rm -rf /tmp/chefpulse-v24.2
+
+      - name: Preserve cloud-build dependency compatibility
+        run: |
+          node -e "const fs=require('fs'); const p='package.json'; const j=JSON.parse(fs.readFileSync(p,'utf8')); j.devDependencies=j.devDependencies||{}; j.devDependencies.esbuild='^0.28.2'; fs.writeFileSync(p, JSON.stringify(j,null,2)+'\n')"
+          node -e "const j=require('./package.json'); if(!j.devDependencies.esbuild.startsWith('^0.28.')) process.exit(1)"
 
       - name: Commit imported V24 source
         run: |
