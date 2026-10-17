@@ -44,7 +44,7 @@ jobs:
         run: npm install
 
       - name: Install Expo-compatible native dependencies
-        run: npx expo install expo-linear-gradient expo-location @react-navigation/native @react-navigation/native-stack
+        run: npx expo install expo-linear-gradient expo-location expo-status-bar @react-navigation/native @react-navigation/native-stack react-native-safe-area-context react-native-screens
 
       - name: Validate Expo project
         run: npx expo-doctor
