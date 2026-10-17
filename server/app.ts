@@ -8,6 +8,7 @@ import { notificationRouter } from './routes/notificationRoutes.js';
 import { adminRouter } from './routes/adminRoutes.js';
 import { otpRouter } from './routes/otpRoutes.js';
 import { groceryRouter } from './routes/groceryRoutes.js';
+import { communicationRouter } from './routes/communicationRoutes.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import { config } from './config.js';
 import { queryOne } from './db/database.js';
@@ -94,6 +95,7 @@ export function createApp(): express.Application {
   app.use('/api/grocery', groceryRouter);
   app.use('/api/rewards', rewardRouter);
   app.use('/api/notifications', notificationRouter);
+  app.use('/api/communications', communicationRouter);
   app.use('/api/admin', adminRouter);
 
   // Global Centralized Error Handler (Catches all sync & async errors, sanitizes responses)
