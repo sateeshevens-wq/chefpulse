@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - mobile-sdk57-chefpulse
+      - mobile-services-screen
   pull_request:
     branches:
       - main
