@@ -1,6 +1,8 @@
 name: Import V24 source from Google Drive
 
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -26,8 +28,6 @@ jobs:
           test -f /tmp/chefpulse-v24.2/package.json
           test -d /tmp/chefpulse-v24.2/src
           test -d /tmp/chefpulse-v24.2/server
-          # GitHub's Actions token cannot create/update workflow files.
-          # Keep the repository's existing workflow files and import the app source.
           rm -rf /tmp/chefpulse-v24.2/.github/workflows
           cp -a /tmp/chefpulse-v24.2/. .
           rm -f /tmp/chefpulse-v24.2.zip
@@ -37,6 +37,9 @@ jobs:
         run: |
           node -e "const fs=require('fs'); const p='package.json'; const j=JSON.parse(fs.readFileSync(p,'utf8')); j.devDependencies=j.devDependencies||{}; j.devDependencies.esbuild='^0.28.2'; fs.writeFileSync(p, JSON.stringify(j,null,2)+'\n')"
           node -e "const j=require('./package.json'); if(!j.devDependencies.esbuild.startsWith('^0.28.')) process.exit(1)"
+
+      - name: Apply ChefPulse final brand and UX patch
+        run: node scripts/app-polish-v24.js
 
       - name: Commit imported V24 source
         run: |
