@@ -4,7 +4,6 @@ const config: CapacitorConfig = {
   appId: 'in.chefpulse.app',
   appName: 'ChefPulse',
   webDir: 'dist',
-  bundledWebRuntime: false,
   android: {
     allowMixedContent: false,
   },
