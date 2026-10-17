@@ -44,12 +44,10 @@ import { AdminPortalView } from './components/admin/AdminPortalView';
 import { SurgeTriggerType, calculateSurgePricing } from './utils/surgePricing';
 import { VerificationSimulatorModal } from './components/common/VerificationSimulatorModal';
 import { CitySelectorModal } from './components/common/CitySelectorModal';
-import { AIChatSupportModal } from './components/common/AIChatSupportModal';
 import { VerificationSimResult } from './utils/verificationEngine';
 import { playAlertChime } from './utils/sound';
 import { PWAInstallButton } from './components/common/PWAInstallButton';
 import { OfflineIndicator } from './components/common/OfflineIndicator';
-import { Bot, ShieldAlert } from 'lucide-react';
 
 export default function App() {
   // Top-Level View State: 'customer' | 'chef' | 'admin' | 'architecture' | 'about' | 'founders'
@@ -288,10 +286,9 @@ export default function App() {
   };
 
   // 24/7 AI Support Chatbot & Safety Sentinel State
-  const [showAIChatModal, setShowAIChatModal] = useState<boolean>(false);
   const [emergencyTickets, setEmergencyTickets] = useState<EmergencyEscalationTicket[]>([
     {
-      id: 'EMERG-AI-9021',
+      id: 'EMERG-9021',
       reason: 'Safety keyword alert: "host aggressive threat in kitchen"',
       userType: 'chef',
       userName: 'Chef Suresh Rao',
@@ -305,7 +302,7 @@ export default function App() {
       actionTaken: 'High-priority SMS & automated call dispatched to local operations supervisor.',
     },
     {
-      id: 'EMERG-AI-8410',
+      id: 'EMERG-8410',
       reason: 'Safety keyword alert: "gas leak smell hazard near stove"',
       userType: 'customer',
       userName: 'Rahul & Tanya Verma',
@@ -386,7 +383,7 @@ export default function App() {
                 triggeredBy: ticket.userName,
                 reason: ticket.reason,
                 supportStatus: 'ESCALATED_DISPATCH',
-                supportAgent: 'Priya N. (AI Safety Desk Operations)',
+                supportAgent: 'ChefPulse Safety Operations',
                 supportPhone: '+91 80 6900 9112',
                 chefNotified: true,
                 chefNotificationTime: ticket.timestamp,
@@ -815,7 +812,6 @@ export default function App() {
         onOpenActiveBooking={() => setShowActiveBookingModal(true)}
         unreadCount={unreadCount}
         onOpenNotifications={() => setShowNotificationsDrawer(true)}
-        onOpenAIChat={() => setShowAIChatModal(true)}
       />
 
       {/* Main Container */}
@@ -1070,7 +1066,6 @@ export default function App() {
         onCancelBooking={handleCancelBooking}
         onTriggerSosPanic={handleTriggerSosPanic}
         onResolveSosAlert={handleResolveSosAlert}
-        onOpenAIChat={() => setShowAIChatModal(true)}
       />
 
       <NotificationDrawer

@@ -9,7 +9,6 @@ import { ChefScheduleManager } from './ChefScheduleManager';
 import { LivenessSelfieModal } from './LivenessSelfieModal';
 import { ChefVerificationPortal } from './ChefVerificationPortal';
 import { ZeroTouchOnboardingEngine } from './ZeroTouchOnboardingEngine';
-import { AIChatSupportModal } from '../common/AIChatSupportModal';
 import { ViralReferralModal } from '../common/ViralReferralModal';
 import { TwoWayBlindRatingModal } from '../common/TwoWayBlindRatingModal';
 import { ShareRideTrackingModal } from '../common/ShareRideTrackingModal';
@@ -24,7 +23,7 @@ import {
 } from '../../utils/voiceEngine';
 import { VerificationSimResult } from '../../utils/verificationEngine';
 import { RealTimeVerificationWidget } from './RealTimeVerificationWidget';
-import { Volume2, VolumeX, Calendar, Navigation, Globe, Camera, FileCheck, Share2, Star, ShieldAlert, Cpu, Bot, Gift, Sparkles, Zap, ShieldCheck } from 'lucide-react';
+import { Volume2, VolumeX, Calendar, Navigation, Globe, Camera, FileCheck, Share2, Star, ShieldAlert, Cpu, Gift, Sparkles, Zap, ShieldCheck } from 'lucide-react';
 
 interface ChefAppViewProps {
   chef: Chef;
@@ -97,7 +96,6 @@ export const ChefAppView: React.FC<ChefAppViewProps> = ({
 
   // New Nationwide Infrastructure Modals
   const [showZeroTouchModal, setShowZeroTouchModal] = useState(false);
-  const [showAIChatModal, setShowAIChatModal] = useState(false);
   const [showReferralModal, setShowReferralModal] = useState(false);
   const uiText = CHEF_UI_TRANSLATIONS[selectedLanguage] || CHEF_UI_TRANSLATIONS.en;
 
@@ -415,15 +413,6 @@ export const ChefAppView: React.FC<ChefAppViewProps> = ({
             >
               <Gift size={13} className="text-amber-400" />
               <span>Refer-a-Chef (Earn ₹1,500 Bounty)</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setShowAIChatModal(true)}
-              className="px-3 py-1.5 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-neutral-200 font-bold border border-neutral-700 flex items-center gap-1.5 cursor-pointer"
-            >
-              <Bot size={13} className="text-emerald-400" />
-              <span>24/7 AI Partner Support</span>
             </button>
 
             <button

@@ -18,7 +18,6 @@ interface HeaderProps {
   unreadCount?: number;
   onOpenNotifications: () => void;
   onOpenChefSignup?: () => void;
-  onOpenAIChat?: () => void;
   onLogout?: () => void;
 }
 
@@ -40,7 +39,7 @@ export const Header: React.FC<HeaderProps> = ({
   const [showUserMenu, setShowUserMenu] = useState(false);
 
   return (
-    <header className={`sticky top-0 z-50 w-full backdrop-blur-md border-b ${currentRoleView === 'customer' ? 'bg-white/95 border-slate-200/80' : 'bg-neutral-950/95 border-neutral-800/80'}`}>
+    <header className={`sticky top-0 z-50 w-full backdrop-blur-md border-b ${'bg-white/95 border-slate-200/80'}`}>
       <div className="max-w-5xl mx-auto px-3 sm:px-5 py-2.5">
         <div className="flex items-center justify-between gap-2">
           <button
@@ -52,23 +51,23 @@ export const Header: React.FC<HeaderProps> = ({
               <img src="/icon.svg" alt="ChefPulse" className="h-full w-full object-cover" />
             </div>
             <div className="min-w-0 text-left">
-              <div className={`font-extrabold text-sm sm:text-base ${currentRoleView === 'customer' ? 'text-slate-900' : 'text-white'} tracking-tight`}>ChefPulse</div>
+              <div className={`font-extrabold text-sm sm:text-base ${currentRoleView === 'customer' ? 'text-slate-900' : 'text-slate-900'} tracking-tight`}>ChefPulse</div>
               <div className="text-[9px] sm:text-[10px] text-neutral-500 truncate max-w-[170px]">{selectedArea.label}, {selectedCity.name}</div>
             </div>
           </button>
 
-          <div className="hidden md:flex items-center gap-1 bg-neutral-900 p-1 rounded-xl border border-neutral-800">
+          <div className="hidden md:flex items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200">
             <button
               type="button"
               onClick={() => onSelectRoleView('customer')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-bold ${currentRoleView === 'customer' ? 'bg-amber-500 text-neutral-950' : 'text-neutral-400 hover:text-white'}`}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold ${currentRoleView === 'customer' ? 'bg-emerald-500 text-slate-900' : 'text-slate-500 hover:text-slate-900'}`}
             >
               Customer
             </button>
             <button
               type="button"
               onClick={() => onSelectRoleView('chef')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-bold ${currentRoleView === 'chef' ? 'bg-amber-500 text-neutral-950' : 'text-neutral-400 hover:text-white'}`}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold ${currentRoleView === 'chef' ? 'bg-emerald-500 text-slate-900' : 'text-slate-500 hover:text-slate-900'}`}
             >
               Chef
             </button>
@@ -89,7 +88,7 @@ export const Header: React.FC<HeaderProps> = ({
             <button
               type="button"
               onClick={onOpenNotifications}
-              className="relative h-9 w-9 rounded-xl bg-neutral-900 border border-neutral-800 flex items-center justify-center text-neutral-300 hover:text-white"
+              className="relative h-9 w-9 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-600 hover:text-slate-900"
               aria-label="Notifications"
             >
               <Bell size={17} />
@@ -104,7 +103,7 @@ export const Header: React.FC<HeaderProps> = ({
               <button
                 type="button"
                 onClick={() => currentUser ? setShowUserMenu((v) => !v) : onOpenAuth()}
-                className="h-9 rounded-xl bg-neutral-900 border border-neutral-800 px-2 flex items-center gap-1.5"
+                className="h-9 rounded-xl bg-white border border-slate-200 px-2 flex items-center gap-1.5"
                 aria-label="Account"
               >
                 {currentUser ? (
@@ -115,31 +114,31 @@ export const Header: React.FC<HeaderProps> = ({
               </button>
 
               {showUserMenu && currentUser && (
-                <div className="absolute right-0 top-full mt-2 w-60 bg-neutral-900 border border-neutral-700 rounded-2xl shadow-2xl p-3 z-50">
-                  <div className="flex items-center gap-2.5 pb-2.5 border-b border-neutral-800">
+                <div className="absolute right-0 top-full mt-2 w-60 bg-white border border-neutral-700 rounded-2xl shadow-2xl p-3 z-50">
+                  <div className="flex items-center gap-2.5 pb-2.5 border-b border-slate-200">
                     <img src={currentUser.avatar} alt="" className="w-9 h-9 rounded-xl object-cover" />
                     <div className="min-w-0">
-                      <div className="text-xs font-bold text-white truncate">{currentUser.name}</div>
+                      <div className="text-xs font-bold text-slate-900 truncate">{currentUser.name}</div>
                       <div className="text-[10px] text-neutral-500 truncate">{currentUser.email || currentUser.phone}</div>
                     </div>
                   </div>
                   <div className="pt-2 space-y-1 text-xs">
-                    <button type="button" onClick={() => { onSelectRoleView(currentUser.role === 'chef' ? 'chef' : 'customer'); setShowUserMenu(false); }} className="w-full text-left px-2.5 py-2 rounded-lg text-neutral-200 hover:bg-neutral-800 flex items-center gap-2">
+                    <button type="button" onClick={() => { onSelectRoleView(currentUser.role === 'chef' ? 'chef' : 'customer'); setShowUserMenu(false); }} className="w-full text-left px-2.5 py-2 rounded-lg text-slate-700 hover:bg-slate-100 flex items-center gap-2">
                       <UserCheck size={14} className="text-amber-400" />
                       <span>{currentUser.role === 'chef' ? 'Chef dashboard' : 'Customer home'}</span>
                     </button>
                     {onOpenChefSignup && currentUser.role !== 'chef' && (
-                      <button type="button" onClick={() => { onOpenChefSignup(); setShowUserMenu(false); }} className="w-full text-left px-2.5 py-2 rounded-lg text-neutral-200 hover:bg-neutral-800 flex items-center gap-2">
+                      <button type="button" onClick={() => { onOpenChefSignup(); setShowUserMenu(false); }} className="w-full text-left px-2.5 py-2 rounded-lg text-slate-700 hover:bg-slate-100 flex items-center gap-2">
                         <ChefHat size={14} className="text-amber-400" />
                         <span>Join as a chef</span>
                       </button>
                     )}
-                    <button type="button" onClick={() => { onOpenAuth(); setShowUserMenu(false); }} className="w-full text-left px-2.5 py-2 rounded-lg text-neutral-200 hover:bg-neutral-800 flex items-center gap-2">
+                    <button type="button" onClick={() => { onOpenAuth(); setShowUserMenu(false); }} className="w-full text-left px-2.5 py-2 rounded-lg text-slate-700 hover:bg-slate-100 flex items-center gap-2">
                       <Sparkles size={14} className="text-amber-400" />
                       <span>Account settings</span>
                     </button>
                     {onLogout && (
-                      <button type="button" onClick={() => { setShowUserMenu(false); onLogout(); }} className="w-full text-left px-2.5 py-2 rounded-lg text-red-400 hover:bg-red-500/10 flex items-center gap-2 border-t border-neutral-800 mt-1">
+                      <button type="button" onClick={() => { setShowUserMenu(false); onLogout(); }} className="w-full text-left px-2.5 py-2 rounded-lg text-red-400 hover:bg-red-500/10 flex items-center gap-2 border-t border-slate-200 mt-1">
                         <LogOut size={14} />
                         <span>Sign out</span>
                       </button>
@@ -154,17 +153,17 @@ export const Header: React.FC<HeaderProps> = ({
         <button
           type="button"
           onClick={onOpenCitySelector}
-          className="mt-2 w-full md:hidden flex items-center gap-1.5 text-left text-[11px] text-neutral-400"
+          className="mt-2 w-full md:hidden flex items-center gap-1.5 text-left text-[11px] text-slate-500"
         >
           <MapPin size={13} className="text-amber-400 shrink-0" />
           <span>Delivering to</span>
-          <span className="font-bold text-white truncate">{selectedArea.label}, {selectedCity.name}</span>
+          <span className="font-bold text-slate-900 truncate">{selectedArea.label}, {selectedCity.name}</span>
           <span className="ml-auto text-amber-400 font-bold">Change</span>
         </button>
 
         <div className="hidden md:flex items-center justify-between mt-2">
-          <button type="button" onClick={onOpenCitySelector} className="text-[11px] text-neutral-400 hover:text-white">
-            <MapPin size={13} className="text-amber-400 inline-block mr-1" /> <span className="font-semibold text-neutral-200">{selectedArea.label}, {selectedCity.name}</span> · Change location
+          <button type="button" onClick={onOpenCitySelector} className="text-[11px] text-slate-500 hover:text-slate-900">
+            <MapPin size={13} className="text-amber-400 inline-block mr-1" /> <span className="font-semibold text-slate-700">{selectedArea.label}, {selectedCity.name}</span> · Change location
           </button>
           <PWAInstallButton variant="header" />
         </div>

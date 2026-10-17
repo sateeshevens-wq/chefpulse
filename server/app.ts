@@ -8,7 +8,6 @@ import { notificationRouter } from './routes/notificationRoutes.js';
 import { adminRouter } from './routes/adminRoutes.js';
 import { otpRouter } from './routes/otpRoutes.js';
 import { groceryRouter } from './routes/groceryRoutes.js';
-import { communicationRouter } from './routes/communicationRoutes.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import { config } from './config.js';
 import { queryOne } from './db/database.js';
@@ -26,6 +25,7 @@ export function createApp(): express.Application {
   app.disable('x-powered-by');
   app.use(requestContext);
 
+  // Explicit CORS policy. Production never uses a wildcard origin.
   app.use((req, res, next) => {
     const origin = req.headers.origin;
     if (config.corsOrigin === '*' || (origin && origin === config.corsOrigin)) {
@@ -38,17 +38,18 @@ export function createApp(): express.Application {
     next();
   });
 
+  // Basic security and parsing
   app.use(express.json({
     limit: '10mb',
     verify: (req, _res, buf) => {
-      const request = req as unknown as express.Request & { rawBody?: Buffer };
-      if (request.originalUrl === '/api/payments/webhook') {
-        request.rawBody = Buffer.from(buf);
+      if (req.originalUrl === '/api/payments/webhook') {
+        req.rawBody = Buffer.from(buf);
       }
     },
   }));
   app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
+  // Basic security headers
   app.use((req, res, next) => {
     res.setHeader('X-Content-Type-Options', 'nosniff');
     res.setHeader('X-Frame-Options', 'SAMEORIGIN');
@@ -59,10 +60,12 @@ export function createApp(): express.Application {
     next();
   });
 
+  // Liveness: process is running. Does not depend on database/provider health.
   app.get('/api/health/live', (_req, res) => {
     res.json({ status: 'ok', app: 'ChefPulse Backend Core', timestamp: new Date().toISOString() });
   });
 
+  // Readiness: database must be reachable before traffic is considered ready.
   app.get('/api/health/ready', async (_req, res) => {
     try {
       await queryOne('SELECT 1 AS ok');
@@ -72,6 +75,7 @@ export function createApp(): express.Application {
     }
   });
 
+  // Backwards-compatible health endpoint.
   app.get('/api/health', async (_req, res) => {
     try {
       await queryOne('SELECT 1 AS ok');
@@ -81,6 +85,7 @@ export function createApp(): express.Application {
     }
   });
 
+  // API Routes
   app.use('/api/auth', authRouter);
   app.use('/api/otp', otpRouter);
   app.use('/api/bookings', bookingRouter);
@@ -89,9 +94,9 @@ export function createApp(): express.Application {
   app.use('/api/grocery', groceryRouter);
   app.use('/api/rewards', rewardRouter);
   app.use('/api/notifications', notificationRouter);
-  app.use('/api/communications', communicationRouter);
   app.use('/api/admin', adminRouter);
 
+  // Global Centralized Error Handler (Catches all sync & async errors, sanitizes responses)
   app.use(errorHandler);
 
   return app;

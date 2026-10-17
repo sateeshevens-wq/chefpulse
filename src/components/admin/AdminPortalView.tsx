@@ -36,7 +36,6 @@ import {
   Check,
   Radio,
   SlidersHorizontal,
-  Bot,
   Phone,
   ShieldAlert,
   Navigation,
@@ -100,8 +99,8 @@ export const AdminPortalView: React.FC<AdminPortalViewProps> = ({
   onDispatchSafetyUnit,
   automatedDisputes = [],
 }) => {
-  // Navigation Tabs: Financial, God Mode, User Mgmt, Moderation, Settings, AI Support Desk
-  const [activeTab, setActiveTab] = useState<'financial' | 'god_mode' | 'users' | 'moderation' | 'settings' | 'ai_support'>('financial');
+  // Navigation Tabs: Financial, God Mode, User Mgmt, Moderation, Settings, Safety Operations
+  const [activeTab, setActiveTab] = useState<'financial' | 'god_mode' | 'users' | 'moderation' | 'settings' | 'safety'>('financial');
 
   // Financial & Escrow State
   const [escrowLedger, setEscrowLedger] = useState([
@@ -616,15 +615,15 @@ export const AdminPortalView: React.FC<AdminPortalViewProps> = ({
         </button>
 
         <button
-          onClick={() => setActiveTab('ai_support')}
+          onClick={() => setActiveTab('safety')}
           className={`px-4 py-2.5 rounded-xl font-bold transition-all flex items-center gap-2 shrink-0 ${
-            activeTab === 'ai_support'
+            activeTab === 'safety'
               ? 'bg-red-600 text-white shadow-lg shadow-red-600/30 font-black'
               : 'bg-neutral-900 text-neutral-400 hover:text-white hover:bg-neutral-800'
           }`}
         >
           <ShieldAlert size={14} className={emergencyTickets.filter(t => t.status !== 'RESOLVED').length > 0 ? "text-red-400 animate-pulse" : ""} />
-          <span>24/7 AI Support & Safety Desk</span>
+          <span>Safety Operations Desk</span>
           {emergencyTickets.filter(t => t.status !== 'RESOLVED').length > 0 ? (
             <span className="px-2 py-0.5 rounded-full bg-red-500 text-white text-[10px] font-black animate-pulse">
               🚨 {emergencyTickets.filter(t => t.status !== 'RESOLVED').length} CRITICAL
@@ -1545,9 +1544,9 @@ export const AdminPortalView: React.FC<AdminPortalViewProps> = ({
       )}
 
       {/* ========================================================================= */}
-      {/* TAB 6: 24/7 AI SUPPORT & EMERGENCY SAFETY DESK */}
+      {/* TAB 6: SAFETY OPERATIONS DESK */}
       {/* ========================================================================= */}
-      {activeTab === 'ai_support' && (
+      {activeTab === 'safety' && (
         <div className="space-y-6 animate-in fade-in duration-200">
           
           {/* Top Safety Operations Banner */}
@@ -1558,7 +1557,7 @@ export const AdminPortalView: React.FC<AdminPortalViewProps> = ({
               </div>
               <div>
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-sm font-black text-white">24/7 AI Support & Emergency Operations Desk</span>
+                  <span className="text-sm font-black text-white">Safety & Emergency Operations Desk</span>
                   <span className="px-2 py-0.5 rounded-full bg-red-500/20 text-red-300 text-[10px] font-mono font-bold border border-red-500/40">
                     SENTINEL ACTIVE
                   </span>
@@ -1567,7 +1566,7 @@ export const AdminPortalView: React.FC<AdminPortalViewProps> = ({
                   </span>
                 </div>
                 <p className="text-xs text-neutral-300 mt-1 max-w-2xl leading-relaxed">
-                  Real-time AI monitoring across Pan-India customer bookings and chef navigation. Intercepts safety-critical keywords (harassment, accident, fire, threat) and dispatches instant level-1 escalation alarms to this desk while automating delay credits and no-show escrow refunds.
+                  Real-time safety operations across customer bookings and chef navigation. Safety-critical incidents are logged and escalated to this desk for operator action.
                 </p>
               </div>
             </div>
@@ -1602,8 +1601,8 @@ export const AdminPortalView: React.FC<AdminPortalViewProps> = ({
 
             <div className="rounded-2xl bg-neutral-900 border border-neutral-800 p-4">
               <div className="text-[11px] text-neutral-400 uppercase font-bold flex items-center justify-between">
-                <span>Total AI Disputes Resolved</span>
-                <Bot size={14} className="text-amber-400" />
+                <span>Automated Dispute Records</span>
+                <Zap size={14} className="text-amber-400" />
               </div>
               <div className="text-2xl font-black text-white font-mono mt-1">
                 {automatedDisputes.length + 142}
@@ -1654,7 +1653,7 @@ export const AdminPortalView: React.FC<AdminPortalViewProps> = ({
                   </span>
                 </div>
                 <p className="text-xs text-neutral-400 mt-0.5">
-                  Triggered autonomously by AI Sentinel when users mention safety-critical terms like harassment, fire, accident, or threat.
+                  Triggered by recorded safety events and operator escalation rules when safety-critical terms or incidents are reported.
                 </p>
               </div>
             </div>
@@ -1800,13 +1799,13 @@ export const AdminPortalView: React.FC<AdminPortalViewProps> = ({
             )}
           </div>
 
-          {/* SECTION 2: Automated Dispute Resolution Ledger (AI Bot Audit) */}
+          {/* SECTION 2: Automated Dispute Resolution Ledger (Operations Audit) */}
           <div className="rounded-3xl bg-neutral-900 border border-neutral-800 p-5 sm:p-6 space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-neutral-800 pb-3">
               <div>
                 <h3 className="text-base font-black text-white flex items-center gap-2">
-                  <Bot size={18} className="text-amber-400" />
-                  <span>24/7 Autonomous Dispute Ledger (AI Resolutions)</span>
+                  <Zap size={18} className="text-amber-400" />
+                  <span>24/7 Autonomous Dispute Ledger (Automated Resolutions)</span>
                 </h3>
                 <p className="text-xs text-neutral-400 mt-0.5">
                   Automated credits, escrow refunds, and navigation assists executed instantly without manual human touch.

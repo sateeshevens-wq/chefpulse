@@ -3,7 +3,7 @@ import { Booking, BookingStatus, FeedbackSubmission } from '../../types';
 import { SmartGroceryIntegration } from './SmartGroceryIntegration';
 import { ShareRideTrackingModal } from '../common/ShareRideTrackingModal';
 import { TwoWayBlindRatingModal } from '../common/TwoWayBlindRatingModal';
-import { Share2, Star, Bot } from 'lucide-react';
+import { Share2, Star } from 'lucide-react';
 
 interface ActiveBookingModalProps {
   booking: Booking | null;
@@ -12,7 +12,6 @@ interface ActiveBookingModalProps {
   onCancelBooking: (bookingId: string) => void;
   onTriggerSosPanic?: (bookingId: string, reason: string) => void;
   onResolveSosAlert?: (bookingId: string) => void;
-  onOpenAIChat?: () => void;
 }
 
 const EMERGENCY_REASONS = [
@@ -30,7 +29,6 @@ export const ActiveBookingModal: React.FC<ActiveBookingModalProps> = ({
   onCancelBooking,
   onTriggerSosPanic,
   onResolveSosAlert,
-  onOpenAIChat,
 }) => {
   const [showPanicDialog, setShowPanicDialog] = useState(false);
   const [selectedReason, setSelectedReason] = useState(EMERGENCY_REASONS[0]);
