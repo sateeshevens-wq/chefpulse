@@ -9,7 +9,7 @@ export type GroceryPartner = 'zepto' | 'blinkit' | 'bigbasket';
 
 export interface GroceryItemInput { id: string; name: string; packSize?: string; quantity?: number; pricePaise: number; }
 
-const assertPartner = (partner: string): asserts partner is GroceryPartner => {
+const assertPartner: (partner: string) => asserts partner is GroceryPartner = (partner: string): asserts partner is GroceryPartner => {
   if (!['zepto', 'blinkit', 'bigbasket'].includes(partner)) throw new Error('Unsupported grocery delivery partner.');
 };
 
