@@ -2,6 +2,7 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Platform, Text } from 'react-native';
 import { BookingProvider } from './BookingContext';
 import SplashScreen from './SplashScreen';
 import HomeScreen from './DashboardScreen';
@@ -24,6 +25,9 @@ import ProfileScreen from './ProfileScreen';
 
 const Stack = createNativeStackNavigator();
 const Tabs = createBottomTabNavigator();
+
+Text.defaultProps = Text.defaultProps || {};
+Text.defaultProps.style = [Text.defaultProps.style, { fontFamily: Platform.OS === 'android' ? 'sans-serif' : undefined }];
 
 const tabOptions = {
   headerShown: false,
