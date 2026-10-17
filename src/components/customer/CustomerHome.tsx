@@ -4,6 +4,7 @@ import { INDIAN_CITIES } from '../../data/indianCities';
 import {
   ArrowRight, BriefcaseBusiness, ChefHat, Clock3, Heart, MapPin, Search,
   ShieldCheck, Sparkles, UtensilsCrossed, UsersRound, CheckCircle2, CalendarDays,
+  PartyPopper, Soup, CalendarCheck2,
 } from 'lucide-react';
 
 interface CustomerHomeProps {
@@ -19,6 +20,13 @@ const categories = [
   { key: 'home_services' as const, Icon: ChefHat, label: 'Cook at home', note: 'A chef comes to you', tone: 'green' },
   { key: 'catering' as const, Icon: UtensilsCrossed, label: 'Catering', note: 'For parties & events', tone: 'orange' },
   { key: 'b2b_hire' as const, Icon: BriefcaseBusiness, label: 'Hire a chef', note: 'Ongoing kitchen help', tone: 'purple' },
+];
+
+const intents = [
+  { key: 'home_services' as const, Icon: Soup, label: "Tonight's dinner", note: 'A chef for your home' },
+  { key: 'home_services' as const, Icon: CalendarCheck2, label: 'Weekend meal', note: 'Plan something special' },
+  { key: 'catering' as const, Icon: PartyPopper, label: 'Host a celebration', note: 'Food for your guests' },
+  { key: 'b2b_hire' as const, Icon: ChefHat, label: 'Regular chef', note: 'Ongoing kitchen help' },
 ];
 
 const moments = [
@@ -75,9 +83,9 @@ export const CustomerHome: React.FC<CustomerHomeProps> = ({
           <div className="chef-hero-v2-brand"><span className="chef-brand-dot"><ChefHat size={16} /></span> ChefPulse</div>
           <div className="chef-hero-v2-kicker"><Sparkles size={12} /> Food made personal</div>
           <h1>Your kitchen.<br /><span>Your chef.</span></h1>
-          <p>From tonight's dinner to your next big celebration, tell us what you need and we will help you get started.</p>
+          <p>From tonight's dinner to your next celebration, tell us what you need and take the next step in seconds.</p>
           <button type="button" onClick={() => onSelectOption('home_services')} className="chef-primary-cta">
-            Find a chef <ArrowRight size={17} />
+            Get started <ArrowRight size={17} />
           </button>
         </div>
       </section>
@@ -88,6 +96,19 @@ export const CustomerHome: React.FC<CustomerHomeProps> = ({
           <span className="text-sm text-slate-500 flex-1">What do you want to cook?</span>
           <span className="chef-filter"><ArrowRight size={16} /></span>
         </button>
+      </section>
+
+      <section className="mt-5" aria-label="Popular ways to use ChefPulse">
+        <div className="section-heading"><div><h2>What brings you here?</h2><p>Pick the closest match</p></div></div>
+        <div className="chef-intent-row" role="list">
+          {intents.map(({ key, Icon, label, note }) => (
+            <button key={label} type="button" onClick={() => onSelectOption(key)} className="chef-intent-chip" role="listitem">
+              <span className="chef-intent-icon"><Icon size={15} /></span>
+              <span><b>{label}</b><small>{note}</small></span>
+              <ArrowRight size={13} />
+            </button>
+          ))}
+        </div>
       </section>
 
       <section className="mt-6">
