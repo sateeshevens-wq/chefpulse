@@ -46,9 +46,44 @@ jobs:
           packages: 'platform-tools platforms;android-35 build-tools;35.0.0'
           accept-android-sdk-licenses: true
 
-      - name: Build release APK and AAB
+      - name: Restore ChefPulse upload keystore
+        env:
+          CHEFPULSE_KEYSTORE_BASE64: ${{ secrets.CHEFPULSE_KEYSTORE_BASE64 }}
+        run: |
+          test -n "$CHEFPULSE_KEYSTORE_BASE64"
+          mkdir -p android-signing
+          printf '%s' "$CHEFPULSE_KEYSTORE_BASE64" | base64 --decode > android-signing/chefpulse-upload-keystore.jks
+          chmod 600 android-signing/chefpulse-upload-keystore.jks
+
+      - name: Configure ChefPulse release signing
+        env:
+          CHEFPULSE_KEYSTORE_PATH: ${{ github.workspace }}/android-signing/chefpulse-upload-keystore.jks
+          CHEFPULSE_KEYSTORE_PASSWORD: ${{ secrets.CHEFPULSE_KEYSTORE_PASSWORD }}
+          CHEFPULSE_KEY_ALIAS: ${{ secrets.CHEFPULSE_KEY_ALIAS }}
+          CHEFPULSE_KEY_PASSWORD: ${{ secrets.CHEFPULSE_KEY_PASSWORD }}
+        run: bash scripts/configure-android-signing.sh
+
+      - name: Build signed release APK and AAB
         working-directory: android
+        env:
+          CHEFPULSE_KEYSTORE_PATH: ${{ github.workspace }}/android-signing/chefpulse-upload-keystore.jks
+          CHEFPULSE_KEYSTORE_PASSWORD: ${{ secrets.CHEFPULSE_KEYSTORE_PASSWORD }}
+          CHEFPULSE_KEY_ALIAS: ${{ secrets.CHEFPULSE_KEY_ALIAS }}
+          CHEFPULSE_KEY_PASSWORD: ${{ secrets.CHEFPULSE_KEY_PASSWORD }}
         run: ./gradlew assembleRelease bundleRelease --no-daemon
+
+      - name: Verify release APK signature
+        run: |
+          APK=$(find android/app/build/outputs/apk/release -name '*.apk' -print -quit)
+          test -n "$APK"
+          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs "$APK"
+
+      - name: Verify release AAB signature
+        run: |
+          AAB=$(find android/app/build/outputs/bundle/release -name '*.aab' -print -quit)
+          test -n "$AAB"
+          jarsigner -verify -verbose -certs "$AAB" >/dev/null
+          echo "ChefPulse release AAB signature verified."
 
       - name: Upload release APK
         uses: actions/upload-artifact@v4
@@ -65,3 +100,7 @@ jobs:
           path: android/app/build/outputs/bundle/release/*.aab
           if-no-files-found: error
           retention-days: 14
+
+      - name: Clean signing material
+        if: always()
+        run: rm -rf android-signing
