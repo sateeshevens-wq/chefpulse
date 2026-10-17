@@ -28,13 +28,6 @@ export const config = {
   // OTP delivery is provider-backed in production. Never silently fall back to a simulated OTP.
   otpProvider: (process.env.OTP_PROVIDER || 'none') as 'none' | 'exoverify',
   exotelAccountSid: process.env.EXOTEL_ACCOUNT_SID || '',
-  exotelApiKey: process.env.EXOTEL_API_KEY || '',
-  exotelApiToken: process.env.EXOTEL_API_TOKEN || '',
-  exotelRegion: (process.env.EXOTEL_REGION || 'mumbai') as 'mumbai' | 'singapore',
-  exotelCallerId: process.env.EXOTEL_CALLER_ID || '',
-  exotelSmsSenderId: process.env.EXOTEL_SMS_SENDER_ID || '',
-  exotelDltEntityId: process.env.EXOTEL_DLT_ENTITY_ID || '',
-  exotelDltTemplateId: process.env.EXOTEL_DLT_TEMPLATE_ID || '',
   exotelVerifyAppId: process.env.EXOTEL_VERIFY_APP_ID || '',
   exotelVerifyAppSecret: process.env.EXOTEL_VERIFY_APP_SECRET || '',
 };
