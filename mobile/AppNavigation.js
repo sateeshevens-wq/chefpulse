@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { supabase } from './supabaseClient';
 import SplashScreen from './SplashScreen';
-import OnboardingScreen from './OnboardingScreen';
-import LocationPermissionScreen from './LocationPermissionScreen';
 import LoginScreen from './LoginScreen';
+import SignUpScreen from './SignUpScreen';
 import HomeScreen from './HomeScreen';
 import SelectServiceScreen from './SelectServiceScreen';
 import FindingChefsScreen from './FindingChefsScreen';
@@ -25,7 +25,8 @@ import ServiceCompletedScreen from './ServiceCompletedScreen';
 import OrdersScreen from './OrdersScreen';
 import ProfileScreen from './ProfileScreen';
 
-const Stack = createNativeStackNavigator();
+const AuthStack = createNativeStackNavigator();
+const AppStack = createNativeStackNavigator();
 const Tabs = createBottomTabNavigator();
 
 const tabOptions = {
@@ -45,33 +46,74 @@ function MainTabs() {
   );
 }
 
+function AuthNavigator() {
+  return (
+    <AuthStack.Navigator initialRouteName="Login" screenOptions={{ headerShown: false }}>
+      <AuthStack.Screen name="Login" component={LoginScreen} />
+      <AuthStack.Screen name="SignUp" component={SignUpScreen} />
+    </AuthStack.Navigator>
+  );
+}
+
+function AppNavigator() {
+  return (
+    <AppStack.Navigator initialRouteName="Home" screenOptions={{ headerShown: false, contentStyle: { backgroundColor: '#FFFFFF' }, animation: 'slide_from_right' }}>
+      <AppStack.Screen name="Home" component={MainTabs} />
+      <AppStack.Screen name="SelectService" component={SelectServiceScreen} />
+      <AppStack.Screen name="FindingChefs" component={FindingChefsScreen} />
+      <AppStack.Screen name="AvailableChefs" component={AvailableChefsScreen} />
+      <AppStack.Screen name="ChefDetails" component={ChefDetailsScreen} />
+      <AppStack.Screen name="RequestStatus" component={RequestStatusScreen} />
+      <AppStack.Screen name="IngredientList" component={IngredientListScreen} />
+      <AppStack.Screen name="DeliveryPartner" component={DeliveryPartnerScreen} />
+      <AppStack.Screen name="OrderSummary" component={OrderSummaryScreen} />
+      <AppStack.Screen name="DeliveryTracking" component={DeliveryTrackingScreen} />
+      <AppStack.Screen name="DeliverySuccess" component={DeliverySuccessScreen} />
+      <AppStack.Screen name="ChefTracking" component={ChefTrackingScreen} />
+      <AppStack.Screen name="ChefArrived" component={ChefArrivedScreen} />
+      <AppStack.Screen name="CookingInProgress" component={CookingInProgressScreen} />
+      <AppStack.Screen name="JobCompleted" component={JobCompletedScreen} />
+      <AppStack.Screen name="ServiceCompleted" component={ServiceCompletedScreen} />
+      <AppStack.Screen name="Orders" component={OrdersScreen} />
+      <AppStack.Screen name="Profile" component={ProfileScreen} />
+    </AppStack.Navigator>
+  );
+}
+
 export default function AppNavigation() {
+  const [session, setSession] = useState(null);
+  const [authLoading, setAuthLoading] = useState(true);
+  const [splashDone, setSplashDone] = useState(false);
+
+  useEffect(() => {
+    let mounted = true;
+
+    supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
+      if (!mounted) return;
+      setSession(currentSession);
+      setAuthLoading(false);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, nextSession) => {
+      setSession(nextSession);
+      setAuthLoading(false);
+    });
+
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
+  }, []);
+
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="SplashScreen" screenOptions={{ headerShown: false, contentStyle: { backgroundColor: '#0B0F0A' }, animation: 'slide_from_right' }}>
-        <Stack.Screen name="SplashScreen" component={SplashScreen} />
-        <Stack.Screen name="OnboardingScreen" component={OnboardingScreen} />
-        <Stack.Screen name="LocationPermissionScreen" component={LocationPermissionScreen} />
-        <Stack.Screen name="LoginScreen" component={LoginScreen} />
-        <Stack.Screen name="Home" component={MainTabs} />
-        <Stack.Screen name="SelectService" component={SelectServiceScreen} />
-        <Stack.Screen name="FindingChefs" component={FindingChefsScreen} />
-        <Stack.Screen name="AvailableChefs" component={AvailableChefsScreen} />
-        <Stack.Screen name="ChefDetails" component={ChefDetailsScreen} />
-        <Stack.Screen name="RequestStatus" component={RequestStatusScreen} />
-        <Stack.Screen name="IngredientList" component={IngredientListScreen} />
-        <Stack.Screen name="DeliveryPartner" component={DeliveryPartnerScreen} />
-        <Stack.Screen name="OrderSummary" component={OrderSummaryScreen} />
-        <Stack.Screen name="DeliveryTracking" component={DeliveryTrackingScreen} />
-        <Stack.Screen name="DeliverySuccess" component={DeliverySuccessScreen} />
-        <Stack.Screen name="ChefTracking" component={ChefTrackingScreen} />
-        <Stack.Screen name="ChefArrived" component={ChefArrivedScreen} />
-        <Stack.Screen name="CookingInProgress" component={CookingInProgressScreen} />
-        <Stack.Screen name="JobCompleted" component={JobCompletedScreen} />
-        <Stack.Screen name="ServiceCompleted" component={ServiceCompletedScreen} />
-        <Stack.Screen name="Orders" component={OrdersScreen} />
-        <Stack.Screen name="Profile" component={ProfileScreen} />
-      </Stack.Navigator>
+      {!splashDone || authLoading ? (
+        <SplashScreen onFinish={() => setSplashDone(true)} />
+      ) : session ? (
+        <AppNavigator />
+      ) : (
+        <AuthNavigator />
+      )}
     </NavigationContainer>
   );
 }
