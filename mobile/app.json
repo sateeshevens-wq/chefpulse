@@ -5,12 +5,16 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/app_icon.png",
-    "splash": {
-      "image": "./assets/image_0.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#0B0F0A"
-    },
     "plugins": [
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#0B0F0A",
+          "image": "./assets/image_0.png",
+          "resizeMode": "contain",
+          "imageWidth": 200
+        }
+      ],
       [
         "expo-notifications",
         {
