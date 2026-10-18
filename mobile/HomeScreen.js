@@ -1,6 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, SafeAreaView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, ImageBackground, SafeAreaView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import * as Location from 'expo-location';
+
+const CHEF_IMAGE = 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&w=1200&q=85';
+const CATERING_IMAGE = 'https://images.unsplash.com/photo-1515003197210-e0cd71810b5f?auto=format&fit=crop&w=900&q=85';
+const KITCHEN_IMAGE = 'https://images.unsplash.com/photo-1556911220-bff31c812dba?auto=format&fit=crop&w=1200&q=85';
+
+function GlassTag({ children, accent = false }) {
+  return (
+    <View style={[styles.glassTag, accent && styles.glassTagAccent]}>
+      <Text style={[styles.glassTagText, accent && styles.glassTagAccentText]}>{children}</Text>
+    </View>
+  );
+}
 
 export default function HomeScreen({ navigation }) {
   const [locationName, setLocationName] = useState('Location unavailable');
@@ -27,7 +40,10 @@ export default function HomeScreen({ navigation }) {
       try {
         const { status } = await Location.requestForegroundPermissionsAsync();
         if (status !== 'granted') {
-          if (mounted) { setLocationName('Location permission denied'); setLocationLoading(false); }
+          if (mounted) {
+            setLocationName('Location permission denied');
+            setLocationLoading(false);
+          }
           return;
         }
         const current = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced });
@@ -37,44 +53,54 @@ export default function HomeScreen({ navigation }) {
           updateLocation,
         );
       } catch {
-        if (mounted) { setLocationName('Location unavailable'); setLocationLoading(false); }
+        if (mounted) {
+          setLocationName('Location unavailable');
+          setLocationLoading(false);
+        }
       }
     };
 
     startLocation();
-    return () => { mounted = false; watcher?.remove?.(); };
+    return () => {
+      mounted = false;
+      watcher?.remove?.();
+    };
   }, []);
+
+  const cityLabel = locationName.includes('permission') || locationName.includes('unavailable')
+    ? locationName
+    : `${locationName}, India`;
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
+      <StatusBar barStyle="light-content" backgroundColor="#07130D" />
+
+      <View style={styles.backgroundGlowTop} />
+      <View style={styles.backgroundGlowBottom} />
+
       <View style={styles.header}>
-        <View style={styles.locationRow}>
-          <Text style={styles.pin}>📍</Text>
-          {locationLoading ? <ActivityIndicator size="small" color="#00C853" /> : <Text style={styles.locationText}>{locationName}</Text>}
+        <View>
+          <Text style={styles.eyebrow}>CHEFPULSE</Text>
+          <Text style={styles.heading}>What are you hosting?</Text>
+        </View>
+        <View style={styles.locationTag}>
+          <Text style={styles.locationPin}>●</Text>
+          {locationLoading ? (
+            <ActivityIndicator size="small" color="#FF9F0A" />
+          ) : (
+            <Text numberOfLines={1} style={styles.locationText}>{cityLabel}</Text>
+          )}
         </View>
       </View>
 
-      <View style={styles.content}>
-        <Text style={styles.heading}>What do you need today?</Text>
-        <TouchableOpacity style={styles.primaryCard} onPress={() => navigation.navigate('SelectService')}>
-          <Text style={styles.primaryText}>Home Chef</Text><Text style={styles.arrow}>›</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.secondaryCard} onPress={() => navigation.navigate('Catering')}>
-          <Text style={styles.secondaryText}>CATERING</Text><Text style={styles.greenArrow}>›</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.secondaryCard} onPress={() => navigation.navigate('B2BJobBoard')}>
-          <Text style={styles.secondaryText}>Hire a Chef</Text><Text style={styles.greenArrow}>›</Text>
-        </TouchableOpacity>
-      </View>
-    </SafeAreaView>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#FFFFFF' }, header: { paddingHorizontal: 20, paddingTop: 12, paddingBottom: 18, borderBottomWidth: 1, borderBottomColor: '#EEEEEE' },
-  locationRow: { flexDirection: 'row', alignItems: 'center', minHeight: 24 }, pin: { fontSize: 18, marginRight: 8 }, locationText: { fontSize: 16, fontWeight: '700', color: '#000000' },
-  content: { flex: 1, padding: 20, paddingTop: 28 }, heading: { color: '#000000', fontSize: 24, fontWeight: '800', marginBottom: 24 },
-  primaryCard: { backgroundColor: '#00C853', borderRadius: 16, minHeight: 72, paddingHorizontal: 20, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }, primaryText: { color: '#FFFFFF', fontSize: 19, fontWeight: '800' }, arrow: { color: '#FFFFFF', fontSize: 32 },
-  secondaryCard: { backgroundColor: '#FFFFFF', borderRadius: 16, minHeight: 72, paddingHorizontal: 20, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14, borderWidth: 1, borderColor: '#E0E0E0' }, secondaryText: { color: '#000000', fontSize: 18, fontWeight: '800' }, greenArrow: { color: '#00C853', fontSize: 32 },
-});
+      <View style={styles.grid}>
+        <TouchableOpacity activeOpacity={0.9} style={styles.chefCard} onPress={() => navigation.navigate('SelectService')}>
+          <ImageBackground source={{ uri: CHEF_IMAGE }} style={styles.imageFill} imageStyle={styles.cardImage}>
+            <LinearGradient colors={['rgba(0,0,0,0.02)', 'rgba(0,0,0,0.82)']} style={styles.gradient}>
+              <View style={styles.cardTopRow}>
+                <GlassTag accent>LIVE • 5m</GlassTag>
+                <GlassTag>Chef Now</GlassTag>
+              </View>
+              <View style={styles.cardBottom}>
+                <Text style={styles.cardKicker}>HOME CHEF</Text>
+                <Text style={styles.cardTitle}>Cook something{"\n
