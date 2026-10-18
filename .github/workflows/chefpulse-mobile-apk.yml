@@ -71,10 +71,12 @@ jobs:
         run: npm install
 
       - name: Install Expo-compatible native dependencies
-        run: npx expo install expo-constants expo-notifications expo-linear-gradient expo-location expo-status-bar @react-navigation/native @react-navigation/native-stack @react-navigation/bottom-tabs react-native-safe-area-context react-native-screens
+        run: npx expo install expo-constants expo-notifications expo-splash-screen expo-linear-gradient expo-location expo-status-bar @react-native-community/datetimepicker @react-navigation/native @react-navigation/native-stack @react-navigation/bottom-tabs react-native-safe-area-context react-native-screens
 
       - name: Validate Expo project
-        run: npx expo-doctor
+        run: |
+          npx expo config --type public
+          npx expo-doctor
 
       - name: Generate clean Android project
         run: npx expo prebuild --platform android --non-interactive
