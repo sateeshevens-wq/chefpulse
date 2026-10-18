@@ -28,7 +28,6 @@ const C = {
 export default function SignUpScreen({ navigation }) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [visible, setVisible] = useState(false);
   const [error, setError] = useState('');
@@ -41,20 +40,14 @@ export default function SignUpScreen({ navigation }) {
 
     const cleanName = name.trim();
     const cleanEmail = email.trim().toLowerCase();
-    const cleanPhone = phone.trim();
 
-    if (!cleanName || !cleanEmail || !cleanPhone || !password) {
+    if (!cleanName || !cleanEmail || !password) {
       setError('Please fill in all fields.');
       return;
     }
 
     if (!/^\S+@\S+\.\S+$/.test(cleanEmail)) {
       setError('Please enter a valid email address.');
-      return;
-    }
-
-    if (!/^\+?[0-9]{10,15}$/.test(cleanPhone.replace(/[\s-]/g, ''))) {
-      setError('Please enter a valid phone number.');
       return;
     }
 
@@ -72,7 +65,6 @@ export default function SignUpScreen({ navigation }) {
         options: {
           data: {
             name: cleanName,
-            phone: cleanPhone,
           },
         },
       });
@@ -123,9 +115,6 @@ export default function SignUpScreen({ navigation }) {
 
             <Text style={styles.label}>Email</Text>
             <TextInput value={email} onChangeText={setEmail} placeholder="you@example.com" placeholderTextColor="#999999" style={styles.input} keyboardType="email-address" autoCapitalize="none" autoCorrect={false} />
-
-            <Text style={styles.label}>Phone Number</Text>
-            <TextInput value={phone} onChangeText={setPhone} placeholder="+91 98765 43210" placeholderTextColor="#999999" style={styles.input} keyboardType="phone-pad" />
 
             <Text style={styles.label}>Password</Text>
             <View style={styles.passwordWrap}>
