@@ -20,6 +20,7 @@ import DeliverySuccessScreen from './DeliverySuccessScreen';
 import ChefTrackingScreen from './ChefTrackingScreen';
 import ChefArrivedScreen from './ChefArrivedScreen';
 import CookingInProgressScreen from './CookingInProgressScreen';
+import JobCompletedScreen from './JobCompletedScreen';
 import ServiceCompletedScreen from './ServiceCompletedScreen';
 import BookingHistoryScreen from './BookingHistoryScreen';
 import ProfileScreen from './ProfileScreen';
@@ -66,6 +67,7 @@ export default function AppNavigation() {
         <Stack.Screen name="ChefTracking" component={ChefTrackingScreen} />
         <Stack.Screen name="ChefArrived" component={ChefArrivedScreen} />
         <Stack.Screen name="CookingInProgress" component={CookingInProgressScreen} />
+        <Stack.Screen name="JobCompleted" component={JobCompletedScreen} />
         <Stack.Screen name="ServiceCompleted" component={ServiceCompletedScreen} />
       </Stack.Navigator>
     </NavigationContainer>
