@@ -1,4 +1,4 @@
-name: ChefPulse Mobile APK
+name: ChefPulse Mobile Android Release
 
 on:
   push:
@@ -11,14 +11,13 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-android-apk:
+  build-android-release:
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: mobile
 
     steps:
-      # Release verification trigger for the complete ChefPulse marketplace build.
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -72,7 +71,7 @@ jobs:
         run: npm install
 
       - name: Install Expo-compatible native dependencies
-        run: npx expo install expo-linear-gradient expo-location expo-status-bar @react-navigation/native @react-navigation/native-stack @react-navigation/bottom-tabs react-native-safe-area-context react-native-screens
+        run: npx expo install expo-constants expo-notifications expo-linear-gradient expo-location expo-status-bar @react-navigation/native @react-navigation/native-stack @react-navigation/bottom-tabs react-native-safe-area-context react-native-screens
 
       - name: Validate Expo project
         run: npx expo-doctor
@@ -123,19 +122,23 @@ jobs:
         run: ./gradlew clean
         working-directory: mobile/android
 
-      - name: Build release APK
-        run: ./gradlew assembleRelease
+      - name: Build release APK and AAB
+        run: ./gradlew assembleRelease bundleRelease
         working-directory: mobile/android
 
-      - name: Verify APK
+      - name: Verify release APK and AAB
         run: |
           test -f android/app/build/outputs/apk/release/app-release.apk
+          test -f android/app/build/outputs/bundle/release/app-release.aab
           ls -lh android/app/build/outputs/apk/release/app-release.apk
+          ls -lh android/app/build/outputs/bundle/release/app-release.aab
 
-      - name: Upload APK
+      - name: Upload Android release artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: ChefPulse-Android-SDK57
-          path: mobile/android/app/build/outputs/apk/release/app-release.apk
+          name: ChefPulse-Android-Release-SDK57
+          path: |
+            mobile/android/app/build/outputs/apk/release/app-release.apk
+            mobile/android/app/build/outputs/bundle/release/app-release.aab
           if-no-files-found: error
           retention-days: 14
