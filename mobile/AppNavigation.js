@@ -94,15 +94,23 @@ export default function AppNavigation() {
   const [session, setSession] = useState(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [splashDone, setSplashDone] = useState(false);
+  const [startupError, setStartupError] = useState(null);
 
   useEffect(() => {
     let mounted = true;
 
-    supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
-      if (!mounted) return;
-      setSession(currentSession);
-      setAuthLoading(false);
-    });
+    supabase.auth.getSession()
+      .then(({ data: { session: currentSession } }) => {
+        if (!mounted) return;
+        setSession(currentSession);
+        setAuthLoading(false);
+      })
+      .catch((error) => {
+        if (!mounted) return;
+        console.error('ChefPulse Supabase startup error:', error);
+        setStartupError(error);
+        setAuthLoading(false);
+      });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, nextSession) => {
       setSession(nextSession);
@@ -114,6 +122,10 @@ export default function AppNavigation() {
       subscription.unsubscribe();
     };
   }, []);
+
+  if (startupError) {
+    throw startupError;
+  }
 
   return (
     <NavigationContainer>
