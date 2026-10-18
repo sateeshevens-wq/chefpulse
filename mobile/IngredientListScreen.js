@@ -1,107 +1,69 @@
 import React from 'react';
-import {
-  FlatList,
-  Pressable,
-  SafeAreaView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
-
-const COLORS = {
-  charcoal: '#0B0F0A',
-  primary: '#39FF14',
-  lime: '#A8FF3F',
-  white: '#FFFFFF',
-  muted: '#9BA39A',
-  card: '#111511',
-  border: '#283028',
-};
-
-const ingredients = [
-  { id: '1', name: 'Fresh Vegetables', price: 210 },
-  { id: '2', name: 'Paneer', price: 130 },
-  { id: '3', name: 'Rice', price: 120 },
-  { id: '4', name: 'Cooking Oil', price: 100 },
-  { id: '5', name: 'Spices', price: 140 },
-];
-
-const total = ingredients.reduce((sum, item) => sum + item.price, 0);
+import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, FlatList, StatusBar } from 'react-native';
 
 export default function IngredientListScreen({ navigation }) {
+  const ingredients = [
+    { id: '1', name: 'Fresh Vegetables (1 kg)', price: '₹210' },
+    { id: '2', name: 'Paneer (500g)', price: '₹130' },
+    { id: '3', name: 'Basmati Rice (1 kg)', price: '₹160' },
+    { id: '4', name: 'Spices & Oils', price: '₹200' }
+  ];
+
+  const renderItem = ({ item }) => (
+    <View style={styles.itemRow}>
+      <Text style={styles.itemName}>{item.name}</Text>
+      <Text style={styles.itemPrice}>{item.price}</Text>
+    </View>
+  );
+
   return (
-    <SafeAreaView style={styles.screen}>
-      <StatusBar barStyle="light-content" backgroundColor={COLORS.charcoal} />
-      <View style={styles.content}>
-        <Text style={styles.title}>Ingredients Required (From Chef Rohit Sharma)</Text>
+    <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
+          <Text style={styles.back}>‹</Text>
+        </TouchableOpacity>
+        <Text style={styles.title}>Ingredients Required</Text>
+        <View style={{width: 30}} />
+      </View>
+      <Text style={styles.subtitle}>From Chef Rohit Sharma</Text>
+      
+      <FlatList 
+        data={ingredients} 
+        renderItem={renderItem} 
+        keyExtractor={i => i.id} 
+        contentContainerStyle={styles.list} 
+        showsVerticalScrollIndicator={false} 
+      />
 
-        <FlatList
-          data={ingredients}
-          keyExtractor={(item) => item.id}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.list}
-          renderItem={({ item }) => (
-            <View style={styles.itemRow}>
-              <Text style={styles.itemName}>{item.name}</Text>
-              <Text style={styles.itemPrice}>₹{item.price}</Text>
-            </View>
-          )}
-        />
-
+      <View style={styles.footer}>
         <View style={styles.totalRow}>
           <Text style={styles.totalLabel}>Total Amount</Text>
-          <Text style={styles.totalValue}>₹{total}</Text>
+          <Text style={styles.totalValue}>₹700</Text>
         </View>
-
-        <Pressable
-          onPress={() => navigation.navigate('DeliveryPartner')}
-          style={({ pressed }) => [styles.button, pressed && styles.pressed]}
-        >
-          <Text style={styles.buttonText}>Order Ingredients</Text>
-        </Pressable>
+        <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('DeliveryPartner')}>
+          <Text style={styles.btnTxt}>Order Ingredients</Text>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: COLORS.charcoal },
-  content: { flex: 1, paddingHorizontal: 20, paddingTop: 24, paddingBottom: 18 },
-  title: { color: COLORS.white, fontSize: 24, lineHeight: 31, fontWeight: '800', marginBottom: 20 },
-  list: { paddingBottom: 10 },
-  itemRow: {
-    minHeight: 58,
-    paddingHorizontal: 16,
-    marginBottom: 10,
-    borderRadius: 14,
-    backgroundColor: COLORS.card,
-    borderWidth: 1,
-    borderColor: COLORS.border,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  itemName: { color: COLORS.white, fontSize: 15, fontWeight: '600' },
-  itemPrice: { color: COLORS.white, fontSize: 15, fontWeight: '700' },
-  totalRow: {
-    paddingTop: 16,
-    paddingBottom: 18,
-    borderTopWidth: 1,
-    borderTopColor: COLORS.border,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  totalLabel: { color: COLORS.white, fontSize: 17, fontWeight: '800' },
-  totalValue: { color: COLORS.primary, fontSize: 19, fontWeight: '900' },
-  button: {
-    minHeight: 54,
-    borderRadius: 14,
-    backgroundColor: COLORS.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  pressed: { opacity: 0.78 },
-  buttonText: { color: '#000000', fontSize: 16, fontWeight: '800' },
+  container: { flex: 1, backgroundColor: '#FFFFFF' },
+  header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20, paddingTop: 10 },
+  backBtn: { padding: 5 },
+  back: { fontSize: 32, color: '#000000', marginTop: -5 },
+  title: { fontSize: 18, fontWeight: 'bold', color: '#000000' },
+  subtitle: { fontSize: 14, color: '#666666', textAlign: 'center', marginTop: 5, marginBottom: 15 },
+  list: { paddingHorizontal: 20 },
+  itemRow: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 15, borderBottomWidth: 1, borderBottomColor: '#EEEEEE' },
+  itemName: { fontSize: 16, color: '#000000' },
+  itemPrice: { fontSize: 16, fontWeight: 'bold', color: '#000000' },
+  footer: { padding: 20, borderTopWidth: 1, borderTopColor: '#EEEEEE', backgroundColor: '#FFFFFF' },
+  totalRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 15 },
+  totalLabel: { fontSize: 18, color: '#666666' },
+  totalValue: { fontSize: 22, fontWeight: 'bold', color: '#000000' },
+  btn: { backgroundColor: '#00C853', height: 54, borderRadius: 25, justifyContent: 'center', alignItems: 'center' },
+  btnTxt: { color: '#FFFFFF', fontSize: 16, fontWeight: 'bold' }
 });
