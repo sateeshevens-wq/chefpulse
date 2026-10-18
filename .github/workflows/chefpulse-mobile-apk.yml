@@ -34,12 +34,13 @@ jobs:
           ImageFile.LOAD_TRUNCATED_IMAGES = True
           image = Image.open('assets/image_0.png')
           image.load()
+          image.convert('RGBA').save('assets/image_0.png', 'PNG')
           image.convert('RGBA').save('assets/splash_logo.png', 'PNG')
           PY
           convert assets/app_icon.png -strip -alpha on -define png:color-type=6 assets/app_icon_normalized.png
           mv assets/app_icon_normalized.png assets/app_icon.png
-          file assets/splash_logo.png assets/app_icon.png
-          identify assets/splash_logo.png assets/app_icon.png
+          file assets/image_0.png assets/splash_logo.png assets/app_icon.png
+          identify assets/image_0.png assets/splash_logo.png assets/app_icon.png
 
       - name: Verify safe asset filenames
         run: |
