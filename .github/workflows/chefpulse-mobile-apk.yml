@@ -56,6 +56,7 @@ jobs:
         run: |
           ICON_DIR="android/app/src/main/res"
           mkdir -p "$ICON_DIR/drawable-nodpi" "$ICON_DIR/mipmap-mdpi" "$ICON_DIR/mipmap-hdpi" "$ICON_DIR/mipmap-xhdpi" "$ICON_DIR/mipmap-xxhdpi" "$ICON_DIR/mipmap-xxxhdpi" "$ICON_DIR/mipmap-anydpi-v26"
+          rm -f "$ICON_DIR"/mipmap-*/ic_launcher*.webp
           cp assets/app_icon.png "$ICON_DIR/mipmap-mdpi/ic_launcher.png"
           cp assets/app_icon.png "$ICON_DIR/drawable-nodpi/ic_launcher_foreground.png"
           for density in hdpi xhdpi xxhdpi xxxhdpi; do
