@@ -1,11 +1,27 @@
 {
   "expo": {
-    "name": "ChefPulse",
+    "name": "Chef Pulse",
     "slug": "chefpulse",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/app_icon.png",
+    "splash": {
+      "image": "./assets/image_0.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0B0F0A"
+    },
+    "plugins": [
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/app_icon.png",
+          "color": "#00C853",
+          "defaultChannel": "status"
+        }
+      ]
+    ],
     "android": {
+      "package": "com.tryustravels.chefpulse",
       "adaptiveIcon": {
         "foregroundImage": "./assets/app_icon.png",
         "backgroundColor": "#000000"
