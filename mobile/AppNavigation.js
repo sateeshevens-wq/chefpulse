@@ -26,6 +26,8 @@ import OrdersScreen from './OrdersScreen';
 import ProfileScreen from './ProfileScreen';
 import ChefRegistrationScreen from './ChefRegistrationScreen';
 import ChefDashboardScreen from './ChefDashboardScreen';
+import CustomerOrdersScreen from './CustomerOrdersScreen';
+import ChefJobsScreen from './ChefJobsScreen';
 
 const AuthStack = createNativeStackNavigator();
 const AppStack = createNativeStackNavigator();
@@ -65,6 +67,8 @@ function AppNavigator() {
       <AppStack.Screen name="FindingChefs" component={FindingChefsScreen} />
       <AppStack.Screen name="AvailableChefs" component={AvailableChefsScreen} />
       <AppStack.Screen name="ChefDetails" component={ChefDetailsScreen} />
+      <AppStack.Screen name="CustomerOrders" component={CustomerOrdersScreen} />
+      <AppStack.Screen name="ChefJobs" component={ChefJobsScreen} />
       <AppStack.Screen name="RequestStatus" component={RequestStatusScreen} />
       <AppStack.Screen name="IngredientList" component={IngredientListScreen} />
       <AppStack.Screen name="DeliveryPartner" component={DeliveryPartnerScreen} />
