@@ -1,5 +1,52 @@
-import React from 'react';
-import { SafeAreaView, StatusBar, StyleSheet, Text, View, Pressable } from 'react-native';
-const C={charcoal:'#0B0F0A',primary:'#39FF14',white:'#FFFFFF',muted:'#9BA39A',road:'#394339'};
-export default function DeliveryTrackingScreen({navigation}){React.useEffect(()=>{const t=setTimeout(()=>navigation.replace('DeliverySuccess'),8000);return()=>clearTimeout(t)},[navigation]);return <SafeAreaView style={s.screen}><StatusBar barStyle="light-content" backgroundColor={C.charcoal}/><View style={s.map}><View style={s.r1}/><View style={s.r2}/><View style={s.route}/><View style={[s.marker,s.store]}><Text>🛒</Text></View><View style={[s.marker,s.home]}><Text>⌂</Text></View></View><View style={s.sheet}><Text style={s.title}>Your groceries are on the way!</Text><View style={s.profile}><View style={s.avatar}><Text style={s.initials}>Z</Text></View><View style={{flex:1}}><Text style={s.name}>Zepto Delivery Partner</Text><Text style={s.detail}>Rider • Arriving soon</Text></View><Text style={s.badge}>10–30 min</Text></View><Pressable style={s.button} onPress={()=>{}}><Text style={s.buttonText}>Live Tracking</Text></Pressable></View></SafeAreaView>}
-const s=StyleSheet.create({screen:{flex:1,backgroundColor:C.charcoal},map:{flex:1,backgroundColor:'#182019',overflow:'hidden'},r1:{position:'absolute',width:520,height:65,backgroundColor:C.road,top:'30%',left:-100,transform:[{rotate:'18deg'}]},r2:{position:'absolute',width:520,height:60,backgroundColor:C.road,top:'62%',left:-100,transform:[{rotate:'-18deg'}]},route:{position:'absolute',width:'78%',height:8,borderRadius:8,backgroundColor:C.primary,top:'49%',left:'11%',transform:[{rotate:'-22deg'}]},marker:{position:'absolute',width:46,height:46,borderRadius:23,alignItems:'center',justifyContent:'center',backgroundColor:C.white},store:{top:'30%',left:'16%'},home:{bottom:'28%',right:'16%',backgroundColor:C.primary},sheet:{backgroundColor:C.charcoal,borderTopLeftRadius:26,borderTopRightRadius:26,padding:22,paddingBottom:28},title:{color:C.white,fontSize:21,fontWeight:'800',marginBottom:18},profile:{flexDirection:'row',alignItems:'center'},avatar:{width:54,height:54,borderRadius:27,backgroundColor:C.primary,alignItems:'center',justifyContent:'center',marginRight:14},initials:{color:'#000',fontWeight:'900',fontSize:20},name:{color:C.white,fontSize:16,fontWeight:'800'},detail:{color:C.muted,marginTop:5},badge:{color:C.primary,fontWeight:'800'},button:{marginTop:20,backgroundColor:C.primary,borderRadius:14,padding:16,alignItems:'center'},buttonText:{color:'#000',fontWeight:'900',fontSize:16}});
+import React, { useEffect } from 'react';
+import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, StatusBar } from 'react-native';
+
+export default function DeliveryTrackingScreen({ navigation }) {
+  useEffect(() => {
+    const timer = setTimeout(() => navigation.replace('DeliverySuccess'), 4000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="dark-content" backgroundColor="#E8F5E9" />
+      <View style={styles.mapSimulation}>
+        <Text style={styles.pinIcon}>🏬</Text>
+        <View style={styles.routeLine} />
+        <Text style={styles.pinIcon}>🛵</Text>
+        <View style={styles.routeLine} />
+        <Text style={styles.pinIcon}>📍</Text>
+      </View>
+      <View style={styles.bottomSheet}>
+        <Text style={styles.title}>Your groceries are on the way!</Text>
+        <Text style={styles.eta}>Arriving in 18 min</Text>
+        <View style={styles.partnerCard}>
+          <View style={styles.avatarPlaceholder}><Text style={styles.avatarTxt}>👨‍哥</Text></View>
+          <View style={styles.partnerInfo}>
+            <Text style={styles.partnerName}>Ramesh (Zepto)</Text>
+            <Text style={styles.partnerRating}>⭐ 4.9</Text>
+          </View>
+          <TouchableOpacity style={styles.callBtn}><Text style={styles.callIcon}>📞</Text></TouchableOpacity>
+        </View>
+      </View>
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: '#E8F5E9', justifyContent: 'space-between' },
+  mapSimulation: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  routeLine: { width: 4, height: 60, backgroundColor: '#00C853', marginVertical: 5 },
+  pinIcon: { fontSize: 32 },
+  bottomSheet: { backgroundColor: '#FFFFFF', borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: 25, elevation: 10, shadowColor: '#000', shadowOffset: {width: 0, height: -3}, shadowOpacity: 0.1, shadowRadius: 5 },
+  title: { fontSize: 18, fontWeight: 'bold', color: '#000000', marginBottom: 5 },
+  eta: { fontSize: 14, color: '#00C853', fontWeight: '600', marginBottom: 20 },
+  partnerCard: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#F8F9F8', padding: 15, borderRadius: 16 },
+  avatarPlaceholder: { width: 50, height: 50, borderRadius: 25, backgroundColor: '#E0F2F1', justifyContent: 'center', alignItems: 'center', marginRight: 15 },
+  avatarTxt: { fontSize: 24 },
+  partnerInfo: { flex: 1 },
+  partnerName: { fontSize: 16, fontWeight: 'bold', color: '#000' },
+  partnerRating: { fontSize: 13, color: '#666', marginTop: 2 },
+  callBtn: { width: 40, height: 40, borderRadius: 20, backgroundColor: '#E8F5E9', justifyContent: 'center', alignItems: 'center' },
+  callIcon: { fontSize: 18 }
+});
