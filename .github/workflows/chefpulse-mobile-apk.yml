@@ -34,11 +34,31 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Verify preinstalled Android SDK
+      - name: Verify and normalize source image assets
         run: |
-          test -n "$ANDROID_HOME"
-          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --list_installed | head -80 || true
-          "$ANDROID_HOME/platform-tools/adb" version || true
+          test -f assets/image_0.png
+          test -f assets/app_icon.png
+          file assets/image_0.png assets/app_icon.png
+          identify -verbose assets/image_0.png >/tmp/image_0_identify.txt
+          identify -verbose assets/app_icon.png >/tmp/app_icon_identify.txt
+          cp assets/image_0.png assets/splash_logo.png
+          convert assets/splash_logo.png -strip -define png:color-type=6 assets/splash_logo_normalized.png
+          mv assets/splash_logo_normalized.png assets/splash_logo.png
+          file assets/splash_logo.png
+          identify -verbose assets/splash_logo.png >/tmp/splash_identify.txt
+
+      - name: Verify safe asset filenames
+        run: |
+          find assets -type f -print | while read -r file; do
+            name="$(basename "$file")"
+            if ! printf '%s\n' "$name" | grep -Eq '^[a-z0-9_]+\.(png|jpg|jpeg|webp)$'; then
+              echo "Invalid asset filename: $file"
+              exit 1
+            fi
+          done
+
+      - name: Remove stale native Android resources
+        run: rm -rf android
 
       - name: Install dependencies
         run: npm install
@@ -49,8 +69,24 @@ jobs:
       - name: Validate Expo project
         run: npx expo-doctor
 
-      - name: Generate Android project
+      - name: Generate clean Android project
         run: npx expo prebuild --platform android --non-interactive
+
+      - name: Remove duplicate or invalid generated image resources
+        run: |
+          RES_DIR="android/app/src/main/res"
+          rm -f "$RES_DIR"/drawable*/assets_image_0.png
+          rm -f "$RES_DIR"/drawable*/image_0.png
+          rm -f "$RES_DIR"/drawable*/splash_logo.png
+          rm -f "$RES_DIR"/drawable*/splash_logo.webp
+          find "$RES_DIR" -type f -print | while read -r file; do
+            base="$(basename "$file")"
+            stem="${base%.*}"
+            if ! printf '%s\n' "$stem" | grep -Eq '^[a-z0-9_]+$'; then
+              echo "Invalid Android resource filename: $file"
+              exit 1
+            fi
+          done
 
       - name: Enforce ChefPulse launcher icon assets
         run: |
@@ -74,6 +110,10 @@ jobs:
           cp "$ICON_DIR/mipmap-anydpi-v26/ic_launcher.xml" "$ICON_DIR/mipmap-anydpi-v26/ic_launcher_round.xml"
           test -f "$ICON_DIR/mipmap-mdpi/ic_launcher.png"
           test -f "$ICON_DIR/mipmap-anydpi-v26/ic_launcher.xml"
+
+      - name: Gradle clean
+        run: ./gradlew clean
+        working-directory: mobile/android
 
       - name: Build release APK
         run: ./gradlew assembleRelease
