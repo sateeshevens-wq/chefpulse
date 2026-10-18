@@ -1,129 +1,68 @@
 import React, { useState } from 'react';
-import {
-  Pressable,
-  SafeAreaView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
-
-const COLORS = {
-  charcoal: '#0B0F0A',
-  primary: '#39FF14',
-  white: '#FFFFFF',
-  muted: '#9BA39A',
-  card: '#111511',
-  border: '#283028',
-};
-
-const partners = [
-  { id: 'zepto', name: 'Zepto', time: '10-30 min' },
-  { id: 'blinkit', name: 'Blinkit', time: '15-30 min' },
-  { id: 'bigbasket', name: 'bigbasket', time: '30-60 min' },
-];
+import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView, StatusBar } from 'react-native';
 
 export default function DeliveryPartnerScreen({ navigation }) {
-  const [selectedPartner, setSelectedPartner] = useState(null);
+  const [partner, setPartner] = useState(null);
+  
+  const partners = [
+    { id: '1', name: 'Zepto', time: '10-30 min', fee: '₹40' },
+    { id: '2', name: 'Blinkit', time: '15-30 min', fee: '₹40' },
+    { id: '3', name: 'bigbasket', time: '30-60 min', fee: '₹35' }
+  ];
 
   return (
-    <SafeAreaView style={styles.screen}>
-      <StatusBar barStyle="light-content" backgroundColor={COLORS.charcoal} />
-      <View style={styles.content}>
-        <Text style={styles.title}>Choose Delivery Partner</Text>
-
-        <View style={styles.cards}>
-          {partners.map((partner) => {
-            const selected = selectedPartner === partner.id;
-            return (
-              <Pressable
-                key={partner.id}
-                onPress={() => setSelectedPartner(partner.id)}
-                style={({ pressed }) => [
-                  styles.card,
-                  selected && styles.cardSelected,
-                  pressed && styles.pressed,
-                ]}
-              >
-                <View style={styles.brandMark}>
-                  <Text style={styles.brandInitial}>{partner.name.charAt(0).toUpperCase()}</Text>
-                </View>
-                <View style={styles.partnerInfo}>
-                  <Text style={styles.partnerName}>{partner.name}</Text>
-                  <Text style={styles.deliveryTime}>{partner.time}</Text>
-                </View>
-                <View style={[styles.radio, selected && styles.radioSelected]}>
-                  {selected && <View style={styles.radioDot} />}
-                </View>
-              </Pressable>
-            );
-          })}
-        </View>
-
-        <Pressable
-          disabled={!selectedPartner}
-          onPress={() => navigation.navigate('OrderSummary', { partner: selectedPartner })}
-          style={({ pressed }) => [
-            styles.button,
-            !selectedPartner && styles.buttonDisabled,
-            pressed && selectedPartner && styles.pressed,
-          ]}
+    <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
+          <Text style={styles.back}>‹</Text>
+        </TouchableOpacity>
+        <Text style={styles.title}>Select Delivery Partner</Text>
+        <View style={{width: 30}} />
+      </View>
+      <ScrollView contentContainerStyle={styles.content}>
+        {partners.map(p => (
+          <TouchableOpacity 
+            key={p.id} 
+            style={[styles.card, partner === p.id && styles.activeCard]} 
+            onPress={() => setPartner(p.id)}
+          >
+            <View style={styles.info}>
+              <Text style={styles.name}>{p.name}</Text>
+              <Text style={styles.time}>⏱ {p.time}</Text>
+            </View>
+            <Text style={styles.fee}>{p.fee}</Text>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
+      <View style={styles.footer}>
+        <TouchableOpacity 
+          style={[styles.btn, !partner && styles.btnDisabled]} 
+          disabled={!partner} 
+          onPress={() => navigation.navigate('OrderSummary')}
         >
-          <Text style={styles.buttonText}>Continue</Text>
-        </Pressable>
+          <Text style={styles.btnTxt}>Continue</Text>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: COLORS.charcoal },
-  content: { flex: 1, paddingHorizontal: 20, paddingTop: 24, paddingBottom: 18 },
-  title: { color: COLORS.white, fontSize: 24, fontWeight: '800', marginBottom: 24 },
-  cards: { gap: 14 },
-  card: {
-    minHeight: 86,
-    borderRadius: 16,
-    paddingHorizontal: 14,
-    backgroundColor: COLORS.card,
-    borderWidth: 1,
-    borderColor: COLORS.border,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  cardSelected: { borderColor: COLORS.primary, borderWidth: 2 },
-  pressed: { opacity: 0.78 },
-  brandMark: {
-    width: 52,
-    height: 52,
-    borderRadius: 14,
-    backgroundColor: '#1C241C',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  brandInitial: { color: COLORS.primary, fontSize: 22, fontWeight: '900' },
-  partnerInfo: { flex: 1, marginLeft: 14 },
-  partnerName: { color: COLORS.white, fontSize: 17, fontWeight: '800' },
-  deliveryTime: { color: COLORS.muted, fontSize: 13, marginTop: 5 },
-  radio: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    borderWidth: 2,
-    borderColor: COLORS.muted,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  radioSelected: { borderColor: COLORS.primary },
-  radioDot: { width: 12, height: 12, borderRadius: 6, backgroundColor: COLORS.primary },
-  button: {
-    minHeight: 54,
-    borderRadius: 14,
-    backgroundColor: COLORS.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 'auto',
-  },
-  buttonDisabled: { opacity: 0.35 },
-  buttonText: { color: '#000000', fontSize: 16, fontWeight: '800' },
+  container: { flex: 1, backgroundColor: '#FFFFFF' },
+  header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20, paddingTop: 10, paddingBottom: 20 },
+  backBtn: { padding: 5 },
+  back: { fontSize: 32, color: '#000000', marginTop: -5 },
+  title: { fontSize: 18, fontWeight: 'bold', color: '#000000' },
+  content: { paddingHorizontal: 20 },
+  card: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 20, marginBottom: 15, borderRadius: 16, borderWidth: 1, borderColor: '#EEEEEE', backgroundColor: '#FFFFFF', elevation: 2, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.05, shadowRadius: 3 },
+  activeCard: { borderColor: '#00C853', backgroundColor: '#F2FFF6', borderWidth: 1.5 },
+  info: { flex: 1 },
+  name: { fontSize: 18, fontWeight: 'bold', color: '#000000', marginBottom: 5 },
+  time: { fontSize: 13, color: '#666666' },
+  fee: { fontSize: 16, fontWeight: 'bold', color: '#000000' },
+  footer: { padding: 20, borderTopWidth: 1, borderTopColor: '#EEEEEE' },
+  btn: { backgroundColor: '#00C853', height: 54, borderRadius: 25, justifyContent: 'center', alignItems: 'center' },
+  btnDisabled: { backgroundColor: '#A5D6A7' },
+  btnTxt: { color: '#FFFFFF', fontSize: 16, fontWeight: 'bold' }
 });
