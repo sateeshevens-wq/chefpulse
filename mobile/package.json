@@ -9,6 +9,7 @@
     "build:android": "expo prebuild --platform android --non-interactive && cd android && ./gradlew assembleRelease"
   },
   "dependencies": {
+    "@react-native-async-storage/async-storage": "^2.1.2",
     "@supabase/supabase-js": "^2.57.4",
     "expo": "~57.0.28",
     "expo-linear-gradient": "~15.0.7",
