@@ -53,32 +53,37 @@ export default function CustomerOrdersScreen({ navigation }) {
     loadOrders();
   }, [loadOrders]);
 
-  const renderOrder = ({ item }) => (
-    <View style={styles.card}>
-      <View style={styles.row}>
-        <Text style={styles.chef}>{serviceLabels[item.service_type] || 'Chef Booking'}</Text>
-        <View style={styles.status}><Text style={styles.statusText}>{statusLabels[item.status] || item.status}</Text></View>
-      </View>
-      <Text style={styles.orderId}>Order #{String(item.id).slice(-8)}</Text>
-      <Text style={styles.date}>{new Date(item.created_at).toLocaleString()}</Text>
-      {item.service_type === 'home_chef' && (
-        <View style={styles.totalRow}>
-          <Text style={styles.muted}>Chef fee + groceries + delivery</Text>
-          <Text style={styles.amount}>₹{(Number(item.grocery_total) + Number(item.delivery_fee)).toLocaleString('en-IN')}</Text>
+  const renderOrder = ({ item }) => {
+    const platformFee = Number(item.platform_fee || 0);
+    const cateringQuote = item.service_type === 'catering' && platformFee > 0 ? platformFee / 0.1 : 0;
+
+    return (
+      <View style={styles.card}>
+        <View style={styles.row}>
+          <Text style={styles.chef}>{serviceLabels[item.service_type] || 'Chef Booking'}</Text>
+          <View style={styles.status}><Text style={styles.statusText}>{statusLabels[item.status] || item.status}</Text></View>
         </View>
-      )}
-      {item.service_type === 'catering' && (
+        <Text style={styles.orderId}>Order #{String(item.id).slice(-8)}</Text>
+        <Text style={styles.date}>{new Date(item.created_at).toLocaleString()}</Text>
+        {item.service_type === 'home_chef' && (
+          <View style={styles.totalRow}>
+            <Text style={styles.muted}>Groceries + delivery</Text>
+            <Text style={styles.amount}>₹{(Number(item.grocery_total) + Number(item.delivery_fee)).toLocaleString('en-IN')}</Text>
+          </View>
+        )}
+        {item.service_type === 'catering' && (
+          <View style={styles.totalRow}>
+            <Text style={styles.muted}>Quoted amount</Text>
+            <Text style={styles.amount}>₹{cateringQuote.toLocaleString('en-IN', { maximumFractionDigits: 2 })}</Text>
+          </View>
+        )}
         <View style={styles.totalRow}>
-          <Text style={styles.muted}>Catering quote</Text>
-          <Text style={styles.amount}>₹{Number(item.grocery_total).toLocaleString('en-IN')}</Text>
+          <Text style={styles.muted}>Platform fee</Text>
+          <Text style={styles.fee}>₹{platformFee.toLocaleString('en-IN', { maximumFractionDigits: 2 })}</Text>
         </View>
-      )}
-      <View style={styles.totalRow}>
-        <Text style={styles.muted}>Platform fee</Text>
-        <Text style={styles.fee}>₹{Number(item.platform_fee || 0).toLocaleString('en-IN', { maximumFractionDigits: 2 })}</Text>
       </View>
-    </View>
-  );
+    );
+  };
 
   if (loading) {
     return (
