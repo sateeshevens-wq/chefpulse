@@ -79,20 +79,6 @@ export default function SignUpScreen({ navigation }) {
 
       if (signUpError) throw signUpError;
 
-      if (data.user) {
-        const { error: profileError } = await supabase.from('users').upsert({
-          id: data.user.id,
-          name: cleanName,
-          email: cleanEmail,
-          phone: cleanPhone,
-          avatar_url: null,
-          role: 'customer',
-          password_hash: 'supabase_auth',
-        });
-
-        if (profileError) throw profileError;
-      }
-
       if (data.session) {
         setMessage('Account created successfully.');
       } else {
@@ -133,49 +119,17 @@ export default function SignUpScreen({ navigation }) {
             <Text style={styles.sub}>Join ChefPulse for great food at your place.</Text>
 
             <Text style={styles.label}>Name</Text>
-            <TextInput
-              value={name}
-              onChangeText={setName}
-              placeholder="Your full name"
-              placeholderTextColor="#999999"
-              style={styles.input}
-              autoCapitalize="words"
-            />
+            <TextInput value={name} onChangeText={setName} placeholder="Your full name" placeholderTextColor="#999999" style={styles.input} autoCapitalize="words" />
 
             <Text style={styles.label}>Email</Text>
-            <TextInput
-              value={email}
-              onChangeText={setEmail}
-              placeholder="you@example.com"
-              placeholderTextColor="#999999"
-              style={styles.input}
-              keyboardType="email-address"
-              autoCapitalize="none"
-              autoCorrect={false}
-            />
+            <TextInput value={email} onChangeText={setEmail} placeholder="you@example.com" placeholderTextColor="#999999" style={styles.input} keyboardType="email-address" autoCapitalize="none" autoCorrect={false} />
 
             <Text style={styles.label}>Phone Number</Text>
-            <TextInput
-              value={phone}
-              onChangeText={setPhone}
-              placeholder="+91 98765 43210"
-              placeholderTextColor="#999999"
-              style={styles.input}
-              keyboardType="phone-pad"
-            />
+            <TextInput value={phone} onChangeText={setPhone} placeholder="+91 98765 43210" placeholderTextColor="#999999" style={styles.input} keyboardType="phone-pad" />
 
             <Text style={styles.label}>Password</Text>
             <View style={styles.passwordWrap}>
-              <TextInput
-                value={password}
-                onChangeText={setPassword}
-                placeholder="Minimum 8 characters"
-                placeholderTextColor="#999999"
-                style={styles.passwordInput}
-                secureTextEntry={!visible}
-                autoCapitalize="none"
-                autoCorrect={false}
-              />
+              <TextInput value={password} onChangeText={setPassword} placeholder="Minimum 8 characters" placeholderTextColor="#999999" style={styles.passwordInput} secureTextEntry={!visible} autoCapitalize="none" autoCorrect={false} />
               <Pressable onPress={() => setVisible(v => !v)} hitSlop={10}>
                 <Text style={styles.eye}>{visible ? 'Hide' : 'Show'}</Text>
               </Pressable>
@@ -184,11 +138,7 @@ export default function SignUpScreen({ navigation }) {
             {!!error && <Text style={styles.error}>{error}</Text>}
             {!!message && <Text style={styles.message}>{message}</Text>}
 
-            <Pressable
-              onPress={handleSignUp}
-              disabled={loading}
-              style={[styles.button, loading && styles.buttonDisabled]}
-            >
+            <Pressable onPress={handleSignUp} disabled={loading} style={[styles.button, loading && styles.buttonDisabled]}>
               <LinearGradient colors={[C.g, C.lime]} style={styles.gradient}>
                 <Text style={styles.buttonText}>{loading ? 'Creating Account...' : 'Create Account'}</Text>
               </LinearGradient>
@@ -211,13 +161,7 @@ const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: C.bg },
   keyboard: { flex: 1 },
   scroll: { flexGrow: 1, paddingBottom: 30 },
-  header: {
-    height: 64,
-    paddingHorizontal: 18,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
+  header: { height: 64, paddingHorizontal: 18, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   back: { color: C.black, fontSize: 38, width: 28 },
   logo: { fontSize: 22, fontWeight: '800' },
   logoWhite: { color: C.black },
@@ -227,26 +171,8 @@ const styles = StyleSheet.create({
   title: { color: C.black, fontSize: 30, fontWeight: '800' },
   sub: { color: C.muted, fontSize: 15, marginTop: 8, marginBottom: 22 },
   label: { color: C.black, fontSize: 14, fontWeight: '700', marginBottom: 8, marginTop: 14 },
-  input: {
-    minHeight: 54,
-    backgroundColor: C.input,
-    borderWidth: 1,
-    borderColor: C.border,
-    borderRadius: 14,
-    paddingHorizontal: 14,
-    color: C.black,
-    fontSize: 15,
-  },
-  passwordWrap: {
-    minHeight: 54,
-    backgroundColor: C.input,
-    borderWidth: 1,
-    borderColor: C.border,
-    borderRadius: 14,
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 14,
-  },
+  input: { minHeight: 54, backgroundColor: C.input, borderWidth: 1, borderColor: C.border, borderRadius: 14, paddingHorizontal: 14, color: C.black, fontSize: 15 },
+  passwordWrap: { minHeight: 54, backgroundColor: C.input, borderWidth: 1, borderColor: C.border, borderRadius: 14, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 14 },
   passwordInput: { flex: 1, color: C.black, fontSize: 15 },
   eye: { color: C.g, fontSize: 14, fontWeight: '700' },
   error: { color: C.error, fontSize: 13, marginTop: 12, lineHeight: 18 },
