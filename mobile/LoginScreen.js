@@ -1,6 +1,206 @@
-import React,{useState} from 'react';
-import {KeyboardAvoidingView,Platform,Pressable,SafeAreaView,ScrollView,StatusBar,StyleSheet,Text,TextInput,View} from 'react-native';
-import {LinearGradient} from 'expo-linear-gradient';
-const C={bg:'#0B0F0A',g:'#39FF14',lime:'#A8FF3F',white:'#FFFFFF',muted:'#9BA39A',input:'#121812',border:'#283028'};
-export default function LoginScreen({navigation}){const[visible,setVisible]=useState(false);const[id,setId]=useState('');const[pw,setPw]=useState('');return <SafeAreaView style={s.screen}><StatusBar barStyle="light-content" backgroundColor={C.bg}/><KeyboardAvoidingView style={{flex:1}} behavior={Platform.OS==='ios'?'padding':undefined}><ScrollView contentContainerStyle={s.scroll} keyboardShouldPersistTaps="handled"><View style={s.header}><Pressable onPress={()=>navigation.goBack()}><Text style={s.back}>‹</Text></Pressable><Text style={s.logo}><Text style={{color:C.white}}>Chef</Text><Text style={{color:C.g}}>Pulse</Text></Text><View style={{width:28}}/></View><View style={s.form}><Text style={s.title}>Welcome Back</Text><Text style={s.sub}>Login to continue your food journey</Text><Text style={s.label}>Email or Phone Number</Text><View style={s.inputWrap}><Text style={s.icon}>@</Text><TextInput value={id} onChangeText={setId} placeholder="Email or Phone Number" placeholderTextColor="#6E776D" style={s.input} autoCapitalize="none"/><View/></View><Text style={s.label}>Password</Text><View style={s.inputWrap}><Text style={s.icon}>⌑</Text><TextInput value={pw} onChangeText={setPw} placeholder="Password" placeholderTextColor="#6E776D" style={s.input} secureTextEntry={!visible}/><Pressable onPress={()=>setVisible(v=>!v)}><Text style={s.eye}>{visible?'◉':'◌'}</Text></Pressable></View><Pressable onPress={()=>navigation.replace('Home')} style={s.button}><LinearGradient colors={[C.g,C.lime]} style={s.gradient}><Text style={s.buttonText}>Login</Text></LinearGradient></Pressable><Pressable style={s.forgot}><Text style={s.forgotText}>Forgot Password?</Text></Pressable><View style={s.dividerRow}><View style={s.divider}/><Text style={s.or}>OR</Text><View style={s.divider}/></View><Pressable style={s.outline}><Text style={s.outlineText}>Create New Account</Text></Pressable></View></ScrollView></KeyboardAvoidingView></SafeAreaView>}
-const s=StyleSheet.create({screen:{flex:1,backgroundColor:C.bg},scroll:{flexGrow:1,paddingBottom:24},header:{height:64,paddingHorizontal:18,flexDirection:'row',alignItems:'center',justifyContent:'space-between'},back:{color:C.white,fontSize:38,width:28},logo:{fontSize:22,fontWeight:'800'},form:{paddingHorizontal:20,paddingTop:42},title:{color:C.white,fontSize:32,fontWeight:'800'},sub:{color:C.muted,fontSize:15,marginTop:8,marginBottom:34},label:{color:C.white,fontSize:14,fontWeight:'700',marginBottom:8,marginTop:18},inputWrap:{minHeight:54,backgroundColor:C.input,borderWidth:1,borderColor:C.border,borderRadius:14,flexDirection:'row',alignItems:'center',paddingHorizontal:14},icon:{color:C.g,fontSize:18,width:28},input:{flex:1,color:C.white,fontSize:15},eye:{color:C.muted,fontSize:18},button:{marginTop:26,borderRadius:14,overflow:'hidden'},gradient:{minHeight:54,alignItems:'center',justifyContent:'center'},buttonText:{color:'#000',fontSize:16,fontWeight:'800'},forgot:{alignItems:'center',paddingVertical:18},forgotText:{color:C.g,fontWeight:'700'},dividerRow:{flexDirection:'row',alignItems:'center',marginVertical:14},divider:{flex:1,height:1,backgroundColor:C.border},or:{color:C.muted,marginHorizontal:12,fontSize:12},outline:{minHeight:54,borderRadius:14,borderWidth:1,borderColor:C.g,alignItems:'center',justifyContent:'center'},outlineText:{color:C.g,fontSize:16,fontWeight:'700'}});
+import React, { useState } from 'react';
+import {
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { supabase } from './supabaseClient';
+
+const C = {
+  bg: '#FFFFFF',
+  g: '#00C853',
+  lime: '#39FF14',
+  black: '#000000',
+  muted: '#666666',
+  input: '#F5F5F5',
+  border: '#E0E0E0',
+  error: '#D32F2F',
+};
+
+export default function LoginScreen({ navigation }) {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [visible, setVisible] = useState(false);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleLogin = async () => {
+    setError('');
+
+    const cleanEmail = email.trim().toLowerCase();
+
+    if (!cleanEmail || !password) {
+      setError('Please enter your email and password.');
+      return;
+    }
+
+    if (!/^\S+@\S+\.\S+$/.test(cleanEmail)) {
+      setError('Please enter a valid email address.');
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: cleanEmail,
+        password,
+      });
+
+      if (signInError) throw signInError;
+    } catch (e) {
+      setError(e?.message || 'Unable to log in. Please check your credentials.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <SafeAreaView style={styles.screen}>
+      <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
+      <KeyboardAvoidingView
+        style={styles.keyboard}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      >
+        <ScrollView
+          contentContainerStyle={styles.scroll}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.header}>
+            <View style={styles.headerSpacer} />
+            <Text style={styles.logo}>
+              <Text style={styles.logoWhite}>Chef</Text>
+              <Text style={styles.logoGreen}>Pulse</Text>
+            </Text>
+            <View style={styles.headerSpacer} />
+          </View>
+
+          <View style={styles.form}>
+            <Text style={styles.title}>Welcome Back</Text>
+            <Text style={styles.sub}>Login to continue your food journey</Text>
+
+            <Text style={styles.label}>Email</Text>
+            <TextInput
+              value={email}
+              onChangeText={setEmail}
+              placeholder="you@example.com"
+              placeholderTextColor="#999999"
+              style={styles.input}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              autoCorrect={false}
+            />
+
+            <Text style={styles.label}>Password</Text>
+            <View style={styles.passwordWrap}>
+              <TextInput
+                value={password}
+                onChangeText={setPassword}
+                placeholder="Password"
+                placeholderTextColor="#999999"
+                style={styles.passwordInput}
+                secureTextEntry={!visible}
+                autoCapitalize="none"
+                autoCorrect={false}
+              />
+              <Pressable onPress={() => setVisible(v => !v)} hitSlop={10}>
+                <Text style={styles.eye}>{visible ? 'Hide' : 'Show'}</Text>
+              </Pressable>
+            </View>
+
+            {!!error && <Text style={styles.error}>{error}</Text>}
+
+            <Pressable
+              onPress={handleLogin}
+              disabled={loading}
+              style={[styles.button, loading && styles.buttonDisabled]}
+            >
+              <LinearGradient colors={[C.g, C.lime]} style={styles.gradient}>
+                <Text style={styles.buttonText}>{loading ? 'Logging In...' : 'Login'}</Text>
+              </LinearGradient>
+            </Pressable>
+
+            <View style={styles.dividerRow}>
+              <View style={styles.divider} />
+              <Text style={styles.or}>OR</Text>
+              <View style={styles.divider} />
+            </View>
+
+            <Pressable style={styles.outline} onPress={() => navigation.navigate('SignUp')}>
+              <Text style={styles.outlineText}>Create New Account</Text>
+            </Pressable>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  screen: { flex: 1, backgroundColor: C.bg },
+  keyboard: { flex: 1 },
+  scroll: { flexGrow: 1, paddingBottom: 30 },
+  header: {
+    height: 64,
+    paddingHorizontal: 18,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  headerSpacer: { width: 28 },
+  logo: { fontSize: 22, fontWeight: '800' },
+  logoWhite: { color: C.black },
+  logoGreen: { color: C.g },
+  form: { paddingHorizontal: 20, paddingTop: 58 },
+  title: { color: C.black, fontSize: 32, fontWeight: '800' },
+  sub: { color: C.muted, fontSize: 15, marginTop: 8, marginBottom: 34 },
+  label: { color: C.black, fontSize: 14, fontWeight: '700', marginBottom: 8, marginTop: 18 },
+  input: {
+    minHeight: 54,
+    backgroundColor: C.input,
+    borderWidth: 1,
+    borderColor: C.border,
+    borderRadius: 14,
+    paddingHorizontal: 14,
+    color: C.black,
+    fontSize: 15,
+  },
+  passwordWrap: {
+    minHeight: 54,
+    backgroundColor: C.input,
+    borderWidth: 1,
+    borderColor: C.border,
+    borderRadius: 14,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 14,
+  },
+  passwordInput: { flex: 1, color: C.black, fontSize: 15 },
+  eye: { color: C.g, fontSize: 14, fontWeight: '700' },
+  error: { color: C.error, fontSize: 13, marginTop: 12, lineHeight: 18 },
+  button: { marginTop: 26, borderRadius: 14, overflow: 'hidden' },
+  buttonDisabled: { opacity: 0.65 },
+  gradient: { minHeight: 54, alignItems: 'center', justifyContent: 'center' },
+  buttonText: { color: C.black, fontSize: 16, fontWeight: '800' },
+  dividerRow: { flexDirection: 'row', alignItems: 'center', marginVertical: 24 },
+  divider: { flex: 1, height: 1, backgroundColor: C.border },
+  or: { color: C.muted, marginHorizontal: 12, fontSize: 12 },
+  outline: {
+    minHeight: 54,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: C.g,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  outlineText: { color: C.g, fontSize: 16, fontWeight: '700' },
+});
