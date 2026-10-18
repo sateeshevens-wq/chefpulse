@@ -1,0 +1,14 @@
+{
+  "expo": {
+    "name": "ChefPulse",
+    "slug": "chefpulse",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "scheme": "chefpulse",
+    "android": {
+      "package": "in.chefpulse.app",
+      "permissions": ["ACCESS_COARSE_LOCATION", "ACCESS_FINE_LOCATION"]
+    }
+  }
+}
