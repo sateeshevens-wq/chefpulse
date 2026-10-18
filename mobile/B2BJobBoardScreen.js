@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
+  Linking,
   Pressable,
   SafeAreaView,
   ScrollView,
@@ -12,6 +13,8 @@ import {
   View,
 } from 'react-native';
 import { supabase } from './supabaseClient';
+
+const UPI_URL = 'upi://pay?pa=YOUR_UPI_ID_HERE&pn=ChefPulse';
 
 export default function B2BJobBoardScreen({ navigation }) {
   const [tab, setTab] = useState('business');
@@ -47,23 +50,6 @@ export default function B2BJobBoardScreen({ navigation }) {
     if (tab === 'chef') loadJobs();
   }, [tab, loadJobs]);
 
-  const submitPosting = async () => {
-    if (posting) return;
-    if (!businessName.trim() || !jobTitle.trim() || !description.trim()) {
-      Alert.alert('Missing details', 'Please enter the business name, job title, and description.');
-      return;
-    }
-
-    Alert.alert(
-      'Mock payment gateway',
-      'A ₹100 job posting payment is required. Continue with the test payment?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        { text: 'Pay ₹100', onPress: createPosting },
-      ],
-    );
-  };
-
   const createPosting = async () => {
     setPosting(true);
     setError('');
@@ -86,12 +72,31 @@ export default function B2BJobBoardScreen({ navigation }) {
       setBusinessName('');
       setJobTitle('');
       setDescription('');
-      Alert.alert('Job posted', 'Your ₹100 test payment was accepted and the vacancy is now live.');
+      Alert.alert('Job posted', 'Your ₹100 UPI payment was initiated and the vacancy is now live.');
       setTab('chef');
     } catch (e) {
       setError(e?.message || 'Unable to post the vacancy. Please try again.');
     } finally {
       setPosting(false);
+    }
+  };
+
+  const submitPosting = async () => {
+    if (posting) return;
+    if (!businessName.trim() || !jobTitle.trim() || !description.trim()) {
+      Alert.alert('Missing details', 'Please enter the business name, job title, and description.');
+      return;
+    }
+
+    setPosting(true);
+    setError('');
+
+    try {
+      await Linking.openURL(UPI_URL);
+      await createPosting();
+    } catch (e) {
+      setPosting(false);
+      Alert.alert('UPI payment unavailable', 'No UPI payment app could open this payment link.');
     }
   };
 
@@ -135,13 +140,13 @@ export default function B2BJobBoardScreen({ navigation }) {
           <View style={styles.paymentCard}>
             <Text style={styles.paymentTitle}>Job Posting Fee</Text>
             <Text style={styles.paymentAmount}>₹100</Text>
-            <Text style={styles.paymentNote}>Mock payment gateway for now. No real payment is processed.</Text>
+            <Text style={styles.paymentNote}>Pay directly through your installed UPI app.</Text>
           </View>
 
           {!!error && <Text style={styles.error}>{error}</Text>}
 
           <Pressable style={[styles.primaryButton, posting && styles.disabled]} onPress={submitPosting} disabled={posting}>
-            {posting ? <ActivityIndicator color="#FFFFFF" /> : <Text style={styles.primaryText}>Pay ₹100 & Post Vacancy</Text>}
+            {posting ? <ActivityIndicator color="#FFFFFF" /> : <Text style={styles.primaryText}>Pay ₹100 via UPI & Post Vacancy</Text>}
           </Pressable>
         </ScrollView>
       ) : (
