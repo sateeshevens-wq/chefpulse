@@ -2,10 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { supabase } from './supabaseClient';
 import SplashScreen from './SplashScreen';
+import OnboardingScreen from './OnboardingScreen';
 import LoginScreen from './LoginScreen';
 import SignUpScreen from './SignUpScreen';
+import EmailOtpScreen from './EmailOtpScreen';
 import HomeScreen from './HomeScreen';
 import SelectServiceScreen from './SelectServiceScreen';
 import FindingChefsScreen from './FindingChefsScreen';
@@ -29,21 +32,15 @@ import ChefDashboardScreen from './ChefDashboardScreen';
 import CustomerOrdersScreen from './CustomerOrdersScreen';
 import ChefJobsScreen from './ChefJobsScreen';
 import B2BJobBoardScreen from './B2BJobBoardScreen';
+import CateringScreen from './CateringScreen';
 
 const AuthStack = createNativeStackNavigator();
 const AppStack = createNativeStackNavigator();
 const Tabs = createBottomTabNavigator();
 
-const tabOptions = {
-  headerShown: false,
-  tabBarStyle: { backgroundColor: '#0E130D', borderTopColor: '#283028', height: 76 },
-  tabBarActiveTintColor: '#39FF14',
-  tabBarInactiveTintColor: '#9BA39A',
-};
-
 function MainTabs() {
   return (
-    <Tabs.Navigator screenOptions={tabOptions}>
+    <Tabs.Navigator screenOptions={{ headerShown: false, tabBarStyle: { backgroundColor: '#FFFFFF', borderTopColor: '#EEEEEE', height: 68 }, tabBarActiveTintColor: '#00C853', tabBarInactiveTintColor: '#9BA39A' }}>
       <Tabs.Screen name="HomeScreen" component={HomeScreen} options={{ title: 'Home' }} />
       <Tabs.Screen name="OrdersScreen" component={OrdersScreen} options={{ title: 'Orders' }} />
       <Tabs.Screen name="Profile" component={ProfileScreen} />
@@ -56,6 +53,7 @@ function AuthNavigator() {
     <AuthStack.Navigator initialRouteName="Login" screenOptions={{ headerShown: false }}>
       <AuthStack.Screen name="Login" component={LoginScreen} />
       <AuthStack.Screen name="SignUp" component={SignUpScreen} />
+      <AuthStack.Screen name="EmailOtp" component={EmailOtpScreen} />
     </AuthStack.Navigator>
   );
 }
@@ -65,6 +63,7 @@ function AppNavigator() {
     <AppStack.Navigator initialRouteName="Home" screenOptions={{ headerShown: false, contentStyle: { backgroundColor: '#FFFFFF' }, animation: 'slide_from_right' }}>
       <AppStack.Screen name="Home" component={MainTabs} />
       <AppStack.Screen name="SelectService" component={SelectServiceScreen} />
+      <AppStack.Screen name="Catering" component={CateringScreen} />
       <AppStack.Screen name="FindingChefs" component={FindingChefsScreen} />
       <AppStack.Screen name="AvailableChefs" component={AvailableChefsScreen} />
       <AppStack.Screen name="ChefDetails" component={ChefDetailsScreen} />
@@ -94,48 +93,47 @@ export default function AppNavigation() {
   const [session, setSession] = useState(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [splashDone, setSplashDone] = useState(false);
+  const [introDone, setIntroDone] = useState(false);
   const [startupError, setStartupError] = useState(null);
 
   useEffect(() => {
     let mounted = true;
-
-    supabase.auth.getSession()
-      .then(({ data: { session: currentSession } }) => {
+    const initialize = async () => {
+      try {
+        const [sessionResult, introValue] = await Promise.all([
+          supabase.auth.getSession(),
+          AsyncStorage.getItem('chefpulse_intro_seen'),
+        ]);
         if (!mounted) return;
-        setSession(currentSession);
+        if (sessionResult.error) throw sessionResult.error;
+        setSession(sessionResult.data.session);
+        setIntroDone(introValue === 'true');
         setAuthLoading(false);
-      })
-      .catch((error) => {
+      } catch (error) {
         if (!mounted) return;
-        console.error('ChefPulse Supabase startup error:', error);
+        console.error('ChefPulse startup error:', error);
         setStartupError(error);
         setAuthLoading(false);
-      });
+      }
+    };
+    initialize();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, nextSession) => {
       setSession(nextSession);
       setAuthLoading(false);
     });
 
-    return () => {
-      mounted = false;
-      subscription.unsubscribe();
-    };
+    return () => { mounted = false; subscription.unsubscribe(); };
   }, []);
 
-  if (startupError) {
-    throw startupError;
-  }
+  if (startupError) throw startupError;
+
+  if (!splashDone) return <SplashScreen onFinish={() => setSplashDone(true)} />;
+  if (!introDone) return <OnboardingScreen onFinish={async () => { await AsyncStorage.setItem('chefpulse_intro_seen', 'true'); setIntroDone(true); }} />;
 
   return (
     <NavigationContainer>
-      {!splashDone || authLoading ? (
-        <SplashScreen onFinish={() => setSplashDone(true)} />
-      ) : session ? (
-        <AppNavigator />
-      ) : (
-        <AuthNavigator />
-      )}
+      {authLoading ? <SplashScreen onFinish={() => {}} /> : session ? <AppNavigator /> : <AuthNavigator />}
     </NavigationContainer>
   );
 }
