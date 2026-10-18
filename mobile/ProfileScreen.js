@@ -1,7 +1,45 @@
 import React from 'react';
-import { SafeAreaView, StatusBar, StyleSheet, Text, View, Pressable, ScrollView } from 'react-native';
-const C={bg:'#0B0F0A',green:'#39FF14',white:'#FFFFFF',muted:'#9BA39A',card:'#121812',border:'#283028',red:'#FF4D4D'};
-function BottomNav(){return <View style={s.nav}>{[['⌂','Home'],['▣','Orders'],['◌','Chat'],['♙','Profile']].map(([i,t])=><Pressable key={t} style={s.navItem}><Text style={s.navIcon}>{i}</Text><Text style={s.navText}>{t}</Text></Pressable>)}</View>}
-const items=[['▣','My Bookings'],['⌖','My Addresses'],['▤','Payment Methods'],['◉','Notifications'],['?','Help & Support'],['⚙','Settings']];
-export default function ProfileScreen(){return <SafeAreaView style={s.screen}><StatusBar barStyle="light-content" backgroundColor={C.bg}/><ScrollView contentContainerStyle={s.content}><View style={s.profile}><View style={s.avatar}><Text style={s.avatarText}>GS</Text></View><Text style={s.name}>Guest User</Text><Text style={s.email}>guest@chefpulse.com</Text></View><View style={s.menu}>{items.map(([icon,label])=><Pressable key={label} style={s.item}><Text style={s.icon}>{icon}</Text><Text style={s.label}>{label}</Text><Text style={s.chevron}>›</Text></Pressable>)}</View><Pressable style={s.logout}><Text style={s.logoutText}>Log Out</Text></Pressable></ScrollView><BottomNav/></SafeAreaView>}
-const s=StyleSheet.create({screen:{flex:1,backgroundColor:C.bg},content:{padding:20,paddingBottom:105},profile:{alignItems:'center',paddingTop:14,paddingBottom:28},avatar:{width:88,height:88,borderRadius:44,backgroundColor:C.green,alignItems:'center',justifyContent:'center',marginBottom:13},avatarText:{color:'#000',fontSize:25,fontWeight:'900'},name:{color:C.white,fontSize:24,fontWeight:'800'},email:{color:C.muted,fontSize:14,marginTop:5},menu:{backgroundColor:C.card,borderRadius:17,borderWidth:1,borderColor:C.border,overflow:'hidden'},item:{height:61,flexDirection:'row',alignItems:'center',paddingHorizontal:17,borderBottomWidth:1,borderColor:C.border},icon:{color:C.green,fontSize:20,width:34,textAlign:'center'},label:{color:C.white,fontSize:15,fontWeight:'600',flex:1},chevron:{color:C.muted,fontSize:27},logout:{height:54,borderRadius:14,borderWidth:1,borderColor:C.red,alignItems:'center',justifyContent:'center',marginTop:22},logoutText:{color:C.red,fontSize:16,fontWeight:'800'},nav:{position:'absolute',bottom:0,left:0,right:0,height:76,backgroundColor:'#0E130D',borderTopWidth:1,borderColor:C.border,flexDirection:'row'},navItem:{flex:1,alignItems:'center',justifyContent:'center'},navIcon:{color:C.white,fontSize:21},navText:{color:C.muted,fontSize:11,marginTop:4}});
+import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView, StatusBar } from 'react-native';
+
+export default function ProfileScreen() {
+  const options = ['Edit Profile', 'Payment Methods', 'Saved Addresses', 'Help & Support', 'Terms of Service'];
+  
+  return (
+    <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
+      <View style={styles.header}><Text style={styles.title}>Profile</Text></View>
+      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+        <View style={styles.userCard}>
+          <View style={styles.avatar}><Text style={styles.avatarTxt}>JD</Text></View>
+          <View><Text style={styles.name}>John Doe</Text><Text style={styles.phone}>+91 98765 43210</Text></View>
+        </View>
+        <Text style={styles.sectionTitle}>Settings</Text>
+        {options.map((opt, i) => (
+          <TouchableOpacity key={i} style={styles.optionRow}>
+            <Text style={styles.optionTxt}>{opt}</Text>
+            <Text style={styles.arrow}>›</Text>
+          </TouchableOpacity>
+        ))}
+        <TouchableOpacity style={styles.logoutBtn}><Text style={styles.logoutTxt}>Log Out</Text></TouchableOpacity>
+      </ScrollView>
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: '#FFFFFF' },
+  header: { padding: 20, borderBottomWidth: 1, borderBottomColor: '#EEEEEE' },
+  title: { fontSize: 24, fontWeight: 'bold', color: '#000000' },
+  content: { padding: 20 },
+  userCard: { flexDirection: 'row', alignItems: 'center', marginBottom: 30, padding: 15, backgroundColor: '#F8F9F8', borderRadius: 16, borderWidth: 1, borderColor: '#EEEEEE' },
+  avatar: { width: 60, height: 60, borderRadius: 30, backgroundColor: '#E0F2F1', justifyContent: 'center', alignItems: 'center', marginRight: 15 },
+  avatarTxt: { fontSize: 24, fontWeight: 'bold', color: '#00C853' },
+  name: { fontSize: 18, fontWeight: 'bold', color: '#000000', marginBottom: 4 },
+  phone: { fontSize: 14, color: '#666666' },
+  sectionTitle: { fontSize: 16, fontWeight: 'bold', color: '#000000', marginBottom: 15 },
+  optionRow: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 15, borderBottomWidth: 1, borderBottomColor: '#EEEEEE' },
+  optionTxt: { fontSize: 16, color: '#333333' },
+  arrow: { fontSize: 20, color: '#999999' },
+  logoutBtn: { marginTop: 30, paddingVertical: 15, alignItems: 'center' },
+  logoutTxt: { color: '#FF3B30', fontSize: 16, fontWeight: 'bold' }
+});
