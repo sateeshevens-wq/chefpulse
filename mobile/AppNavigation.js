@@ -28,6 +28,7 @@ import ChefRegistrationScreen from './ChefRegistrationScreen';
 import ChefDashboardScreen from './ChefDashboardScreen';
 import CustomerOrdersScreen from './CustomerOrdersScreen';
 import ChefJobsScreen from './ChefJobsScreen';
+import B2BJobBoardScreen from './B2BJobBoardScreen';
 
 const AuthStack = createNativeStackNavigator();
 const AppStack = createNativeStackNavigator();
@@ -69,6 +70,7 @@ function AppNavigator() {
       <AppStack.Screen name="ChefDetails" component={ChefDetailsScreen} />
       <AppStack.Screen name="CustomerOrders" component={CustomerOrdersScreen} />
       <AppStack.Screen name="ChefJobs" component={ChefJobsScreen} />
+      <AppStack.Screen name="B2BJobBoard" component={B2BJobBoardScreen} />
       <AppStack.Screen name="RequestStatus" component={RequestStatusScreen} />
       <AppStack.Screen name="IngredientList" component={IngredientListScreen} />
       <AppStack.Screen name="DeliveryPartner" component={DeliveryPartnerScreen} />
