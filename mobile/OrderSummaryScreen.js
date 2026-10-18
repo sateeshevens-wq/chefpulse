@@ -1,7 +1,25 @@
-import React from 'react';
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView, StatusBar } from 'react-native';
+import React, { useState } from 'react';
+import { Linking, View, Text, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView, StatusBar, Alert, ActivityIndicator } from 'react-native';
+
+const UPI_URL = 'upi://pay?pa=YOUR_UPI_ID_HERE&pn=ChefPulse';
 
 export default function OrderSummaryScreen({ navigation }) {
+  const [openingUpi, setOpeningUpi] = useState(false);
+
+  const openUpiPayment = async () => {
+    if (openingUpi) return;
+    setOpeningUpi(true);
+
+    try {
+      await Linking.openURL(UPI_URL);
+      navigation.navigate('DeliveryTracking');
+    } catch (e) {
+      Alert.alert('UPI payment unavailable', 'No UPI payment app could open this payment link.');
+    } finally {
+      setOpeningUpi(false);
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
@@ -27,10 +45,10 @@ export default function OrderSummaryScreen({ navigation }) {
         </View>
       </ScrollView>
       <View style={styles.footer}>
-        <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('DeliveryTracking')}>
-          <Text style={styles.btnTxt}>🔒 Pay Now</Text>
+        <TouchableOpacity style={[styles.btn, openingUpi && styles.disabled]} onPress={openUpiPayment} disabled={openingUpi}>
+          {openingUpi ? <ActivityIndicator color="#FFFFFF" /> : <Text style={styles.btnTxt}>Pay ₹740 via UPI</Text>}
         </TouchableOpacity>
-        <Text style={styles.secure}>Secure Payment</Text>
+        <Text style={styles.secure}>Opens your installed UPI app directly</Text>
       </View>
     </SafeAreaView>
   );
@@ -54,6 +72,7 @@ const styles = StyleSheet.create({
   totalVal: { fontSize: 18, fontWeight: 'bold', color: '#00C853' },
   footer: { padding: 20, borderTopWidth: 1, borderTopColor: '#EEEEEE', backgroundColor: '#FFFFFF' },
   btn: { backgroundColor: '#00C853', height: 54, borderRadius: 25, justifyContent: 'center', alignItems: 'center', marginBottom: 10 },
+  disabled: { opacity: 0.65 },
   btnTxt: { color: '#FFFFFF', fontSize: 16, fontWeight: 'bold' },
   secure: { textAlign: 'center', fontSize: 12, color: '#9BA39A' }
 });
