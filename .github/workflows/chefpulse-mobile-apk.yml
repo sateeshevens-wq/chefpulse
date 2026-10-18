@@ -18,6 +18,7 @@ jobs:
         working-directory: mobile
 
     steps:
+      # Release verification trigger for the complete ChefPulse marketplace build.
       - name: Checkout
         uses: actions/checkout@v4
 
