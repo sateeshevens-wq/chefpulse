@@ -21,31 +21,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node.js 22
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22.13.0
-          cache: npm
-          cache-dependency-path: mobile/package.json
-
-      - name: Setup Java 17
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: '17'
+      - name: Install image validation tools
+        run: sudo apt-get update -qq && sudo apt-get install -y imagemagick
 
       - name: Verify and normalize source image assets
         run: |
           test -f assets/image_0.png
           test -f assets/app_icon.png
           file assets/image_0.png assets/app_icon.png
-          identify -verbose assets/image_0.png >/tmp/image_0_identify.txt
-          identify -verbose assets/app_icon.png >/tmp/app_icon_identify.txt
-          cp assets/image_0.png assets/splash_logo.png
-          convert assets/splash_logo.png -strip -define png:color-type=6 assets/splash_logo_normalized.png
-          mv assets/splash_logo_normalized.png assets/splash_logo.png
-          file assets/splash_logo.png
-          identify -verbose assets/splash_logo.png >/tmp/splash_identify.txt
+          convert assets/image_0.png -strip -alpha on -define png:color-type=6 assets/splash_logo.png
+          convert assets/app_icon.png -strip -alpha on -define png:color-type=6 assets/app_icon_normalized.png
+          mv assets/app_icon_normalized.png assets/app_icon.png
+          file assets/splash_logo.png assets/app_icon.png
+          identify assets/splash_logo.png assets/app_icon.png
 
       - name: Verify safe asset filenames
         run: |
@@ -59,6 +47,19 @@ jobs:
 
       - name: Remove stale native Android resources
         run: rm -rf android
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.13.0
+          cache: npm
+          cache-dependency-path: mobile/package.json
+
+      - name: Setup Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
 
       - name: Install dependencies
         run: npm install
