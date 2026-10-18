@@ -22,7 +22,7 @@ import ChefArrivedScreen from './ChefArrivedScreen';
 import CookingInProgressScreen from './CookingInProgressScreen';
 import JobCompletedScreen from './JobCompletedScreen';
 import ServiceCompletedScreen from './ServiceCompletedScreen';
-import BookingHistoryScreen from './BookingHistoryScreen';
+import OrdersScreen from './OrdersScreen';
 import ProfileScreen from './ProfileScreen';
 
 const Stack = createNativeStackNavigator();
@@ -39,7 +39,7 @@ function MainTabs() {
   return (
     <Tabs.Navigator screenOptions={tabOptions}>
       <Tabs.Screen name="HomeScreen" component={HomeScreen} options={{ title: 'Home' }} />
-      <Tabs.Screen name="BookingHistory" component={BookingHistoryScreen} options={{ title: 'Orders' }} />
+      <Tabs.Screen name="OrdersScreen" component={OrdersScreen} options={{ title: 'Orders' }} />
       <Tabs.Screen name="Profile" component={ProfileScreen} />
     </Tabs.Navigator>
   );
@@ -69,6 +69,8 @@ export default function AppNavigation() {
         <Stack.Screen name="CookingInProgress" component={CookingInProgressScreen} />
         <Stack.Screen name="JobCompleted" component={JobCompletedScreen} />
         <Stack.Screen name="ServiceCompleted" component={ServiceCompletedScreen} />
+        <Stack.Screen name="Orders" component={OrdersScreen} />
+        <Stack.Screen name="Profile" component={ProfileScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
