@@ -49,8 +49,8 @@ export default function AvailableChefsScreen({ navigation }) {
           <Text style={styles.tags}>{item.specialty || 'Chef'}</Text>
           <Text style={styles.price}>₹{Number(item.hourly_rate || 0).toLocaleString('en-IN')} / hr</Text>
         </View>
-        <TouchableOpacity style={styles.acceptBtn} onPress={() => navigation.navigate('ChefDetails')}>
-          <Text style={styles.acceptText}>Accept</Text>
+        <TouchableOpacity style={styles.acceptBtn} onPress={() => navigation.navigate('ChefDetails', { chefId: item.id })}>
+          <Text style={styles.acceptText}>Book</Text>
         </TouchableOpacity>
       </View>
     );
