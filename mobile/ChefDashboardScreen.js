@@ -106,6 +106,14 @@ export default function ChefDashboardScreen({ navigation }) {
               <Text style={styles.bio}>{chef.bio}</Text>
             </View>
 
+            <Pressable style={styles.jobsButton} onPress={() => navigation.navigate('ChefJobs')}>
+              <View>
+                <Text style={styles.jobsTitle}>Job Requests</Text>
+                <Text style={styles.jobsSub}>View and manage customer bookings</Text>
+              </View>
+              <Text style={styles.jobsArrow}>›</Text>
+            </Pressable>
+
             <View style={styles.onlineCard}>
               <View style={styles.onlineText}>
                 <Text style={styles.onlineTitle}>Available for bookings</Text>
@@ -149,7 +157,11 @@ const styles = StyleSheet.create({
   specialty: { color: C.g, fontSize: 16, fontWeight: '700', marginTop: 6 },
   rate: { color: C.black, fontSize: 15, fontWeight: '700', marginTop: 14 },
   bio: { color: C.muted, fontSize: 14, lineHeight: 20, marginTop: 12 },
-  onlineCard: { marginTop: 20, padding: 18, borderWidth: 1, borderColor: C.border, borderRadius: 16, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  jobsButton: { marginTop: 16, padding: 18, borderWidth: 1, borderColor: C.border, borderRadius: 16, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  jobsTitle: { color: C.black, fontSize: 17, fontWeight: '800' },
+  jobsSub: { color: C.muted, fontSize: 13, marginTop: 5 },
+  jobsArrow: { color: C.g, fontSize: 30 },
+  onlineCard: { marginTop: 16, padding: 18, borderWidth: 1, borderColor: C.border, borderRadius: 16, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   onlineText: { flex: 1, paddingRight: 12 },
   onlineTitle: { color: C.black, fontSize: 17, fontWeight: '800' },
   onlineSub: { color: C.muted, fontSize: 13, lineHeight: 18, marginTop: 5 },
