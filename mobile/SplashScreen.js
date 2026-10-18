@@ -3,14 +3,14 @@ import { Image, SafeAreaView, StatusBar, StyleSheet } from 'react-native';
 
 const SPLASH_DURATION_MS = 2500;
 
-export default function SplashScreen({ navigation }) {
+export default function SplashScreen({ onFinish }) {
   useEffect(() => {
     const timer = setTimeout(() => {
-      navigation.replace('Home');
+      onFinish?.();
     }, SPLASH_DURATION_MS);
 
     return () => clearTimeout(timer);
-  }, [navigation]);
+  }, [onFinish]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -29,9 +29,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#000000',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   logo: {
-    width: '100%',
-    height: '100%',
+    width: '92%',
+    height: '72%',
   },
 });
