@@ -4,11 +4,12 @@
     "slug": "chefpulse",
     "version": "1.0.0",
     "orientation": "portrait",
-    "userInterfaceStyle": "dark",
-    "scheme": "chefpulse",
+    "icon": "./assets/image_0.png",
     "android": {
-      "package": "in.chefpulse.app",
-      "permissions": ["ACCESS_COARSE_LOCATION", "ACCESS_FINE_LOCATION"]
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/image_0.png",
+        "backgroundColor": "#000000"
+      }
     }
   }
 }
