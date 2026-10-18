@@ -56,13 +56,13 @@ jobs:
         run: |
           ICON_DIR="android/app/src/main/res"
           mkdir -p "$ICON_DIR/drawable-nodpi" "$ICON_DIR/mipmap-mdpi" "$ICON_DIR/mipmap-hdpi" "$ICON_DIR/mipmap-xhdpi" "$ICON_DIR/mipmap-xxhdpi" "$ICON_DIR/mipmap-xxxhdpi" "$ICON_DIR/mipmap-anydpi-v26"
-          convert assets/app_icon.png -resize 360x360 -background '#000000' -gravity center -extent 512x512 "$ICON_DIR/mipmap-mdpi/ic_launcher.png"
-          cp "$ICON_DIR/mipmap-mdpi/ic_launcher.png" "$ICON_DIR/drawable-nodpi/ic_launcher_foreground.png"
+          cp assets/app_icon.png "$ICON_DIR/mipmap-mdpi/ic_launcher.png"
+          cp assets/app_icon.png "$ICON_DIR/drawable-nodpi/ic_launcher_foreground.png"
           for density in hdpi xhdpi xxhdpi xxxhdpi; do
-            cp "$ICON_DIR/mipmap-mdpi/ic_launcher.png" "$ICON_DIR/mipmap-$density/ic_launcher.png"
-            cp "$ICON_DIR/mipmap-mdpi/ic_launcher.png" "$ICON_DIR/mipmap-$density/ic_launcher_round.png"
+            cp assets/app_icon.png "$ICON_DIR/mipmap-$density/ic_launcher.png"
+            cp assets/app_icon.png "$ICON_DIR/mipmap-$density/ic_launcher_round.png"
           done
-          cp "$ICON_DIR/mipmap-mdpi/ic_launcher.png" "$ICON_DIR/mipmap-mdpi/ic_launcher_round.png"
+          cp assets/app_icon.png "$ICON_DIR/mipmap-mdpi/ic_launcher_round.png"
           cat > "$ICON_DIR/mipmap-anydpi-v26/ic_launcher.xml" <<'XML'
           <?xml version="1.0" encoding="utf-8"?>
           <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
