@@ -1,55 +1,45 @@
-import React, { useEffect, useState } from 'react';
-import { Image, SafeAreaView, StatusBar, StyleSheet, Text, View, Pressable } from 'react-native';
-import { useBooking } from './BookingContext';
-
-const COLORS = { charcoal: '#0B0F0A', primary: '#39FF14', lime: '#A8FF3F', white: '#FFFFFF', muted: '#9BA39A' };
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, StatusBar } from 'react-native';
 
 export default function CookingInProgressScreen({ navigation }) {
-  const { selectedChef, setBookingStatus } = useBooking();
-  const [seconds, setSeconds] = useState(4200);
-
+  const [time, setTime] = useState(0);
+  
   useEffect(() => {
-    setBookingStatus('cooking');
-    const id = setInterval(() => setSeconds((value) => Math.max(0, value - 1)), 1000);
-    return () => clearInterval(id);
-  }, [setBookingStatus]);
-
-  const h = Math.floor(seconds / 3600);
-  const m = Math.floor((seconds % 3600) / 60);
+    const timer = setInterval(() => setTime(t => t + 1), 1000);
+    return () => clearInterval(timer);
+  }, []);
+  
+  const formatTime = (s) => `${Math.floor(s/60).toString().padStart(2,'0')}:${(s%60).toString().padStart(2,'0')}`;
 
   return (
-    <SafeAreaView style={styles.screen}>
-      <StatusBar barStyle="light-content" backgroundColor={COLORS.charcoal} />
-      <Image
-        source={{ uri: selectedChef?.image || 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&w=900&q=80' }}
-        style={styles.image}
-      />
-      <Text style={styles.title}>Enjoy your fresh, home-cooked meal!</Text>
-      <Text style={styles.timer}>{h} hr {String(m).padStart(2, '0')} min</Text>
-      <View style={styles.progress}><View style={styles.fill} /></View>
-      <View style={styles.labels}><Text style={styles.label}>Arrived</Text><Text style={styles.label}>Cooking</Text><Text style={styles.label}>Complete</Text></View>
-      <Pressable
-        style={styles.button}
-        onPress={() => {
-          setBookingStatus('completed');
-          navigation.navigate('ServiceCompleted');
-        }}
-      >
-        <Text style={styles.buttonText}>Complete Service</Text>
-      </Pressable>
+    <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
+      <View style={styles.center}>
+        <Text style={styles.icon}>🍳</Text>
+        <Text style={styles.title}>Cooking in Progress</Text>
+        <Text style={styles.subtitle}>Chef Rohit is preparing your meal</Text>
+        <View style={styles.timerBox}>
+          <Text style={styles.timer}>{formatTime(time)}</Text>
+        </View>
+      </View>
+      <View style={styles.footer}>
+        <TouchableOpacity style={styles.btn} onPress={() => navigation.replace('JobCompleted')}>
+          <Text style={styles.btnTxt}>Finish Cooking (Test)</Text>
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: COLORS.charcoal, padding: 22 },
-  image: { width: '100%', height: 300, borderRadius: 24, backgroundColor: '#172018' },
-  title: { color: COLORS.white, fontSize: 24, fontWeight: '800', marginTop: 24 },
-  timer: { color: COLORS.primary, fontSize: 30, fontWeight: '900', marginTop: 18 },
-  progress: { height: 10, borderRadius: 10, backgroundColor: '#293129', marginTop: 24, overflow: 'hidden' },
-  fill: { width: '62%', height: '100%', backgroundColor: COLORS.primary },
-  labels: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 8 },
-  label: { color: COLORS.muted },
-  button: { marginTop: 'auto', backgroundColor: COLORS.primary, borderRadius: 14, padding: 17, alignItems: 'center' },
-  buttonText: { color: '#000', fontWeight: '900', fontSize: 16 },
+  container: { flex: 1, backgroundColor: '#FFFFFF', justifyContent: 'space-between' },
+  center: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 },
+  icon: { fontSize: 60, marginBottom: 20 },
+  title: { fontSize: 24, fontWeight: 'bold', color: '#000000', marginBottom: 10 },
+  subtitle: { fontSize: 16, color: '#666666', marginBottom: 40 },
+  timerBox: { paddingHorizontal: 30, paddingVertical: 15, borderRadius: 20, backgroundColor: '#F2FFF6', borderWidth: 1, borderColor: '#00C853' },
+  timer: { fontSize: 36, fontWeight: 'bold', color: '#00C853', fontVariant: ['tabular-nums'] },
+  footer: { padding: 20 },
+  btn: { backgroundColor: '#00C853', height: 54, borderRadius: 25, justifyContent: 'center', alignItems: 'center' },
+  btnTxt: { color: '#FFFFFF', fontSize: 16, fontWeight: 'bold' }
 });
