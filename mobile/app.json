@@ -4,10 +4,10 @@
     "slug": "chefpulse",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/image_0.png",
+    "icon": "./assets/app_icon.png",
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/image_0.png",
+        "foregroundImage": "./assets/app_icon.png",
         "backgroundColor": "#000000"
       }
     }
