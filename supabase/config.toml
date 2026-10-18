@@ -1,0 +1,16 @@
+# ChefPulse Supabase project configuration
+# Run `supabase link` with your project ref before applying migrations.
+
+project_id = "chefpulse"
+
+[db]
+major_version = 17
+
+[api]
+enabled = true
+
+[auth]
+enabled = true
+
+[storage]
+enabled = true
