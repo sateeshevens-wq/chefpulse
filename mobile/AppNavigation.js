@@ -7,7 +7,7 @@ import OnboardingScreen from './OnboardingScreen';
 import LocationPermissionScreen from './LocationPermissionScreen';
 import LoginScreen from './LoginScreen';
 import HomeScreen from './HomeScreen';
-import SelectServiceScreen from './ServicesScreen';
+import SelectServiceScreen from './SelectServiceScreen';
 import FindingChefsScreen from './FindingChefsScreen';
 import AvailableChefsScreen from './AvailableChefsScreen';
 import ChefDetailsScreen from './ChefDetailsScreen';
