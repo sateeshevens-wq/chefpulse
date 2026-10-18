@@ -11,6 +11,11 @@ const statusLabels = {
   cancelled: 'Cancelled',
 };
 
+const serviceLabels = {
+  home_chef: 'Home Chef',
+  catering: 'Catering',
+};
+
 export default function CustomerOrdersScreen({ navigation }) {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -30,7 +35,7 @@ export default function CustomerOrdersScreen({ navigation }) {
 
     const { data, error: fetchError } = await supabase
       .from('orders')
-      .select('id, chef_id, status, grocery_total, delivery_fee, created_at')
+      .select('id, chef_id, status, service_type, grocery_total, delivery_fee, platform_fee, created_at')
       .eq('user_id', user.id)
       .order('created_at', { ascending: false });
 
@@ -51,18 +56,26 @@ export default function CustomerOrdersScreen({ navigation }) {
   const renderOrder = ({ item }) => (
     <View style={styles.card}>
       <View style={styles.row}>
-        <Text style={styles.chef}>Chef Booking</Text>
+        <Text style={styles.chef}>{serviceLabels[item.service_type] || 'Chef Booking'}</Text>
         <View style={styles.status}><Text style={styles.statusText}>{statusLabels[item.status] || item.status}</Text></View>
       </View>
       <Text style={styles.orderId}>Order #{String(item.id).slice(-8)}</Text>
       <Text style={styles.date}>{new Date(item.created_at).toLocaleString()}</Text>
+      {item.service_type === 'home_chef' && (
+        <View style={styles.totalRow}>
+          <Text style={styles.muted}>Chef fee + groceries + delivery</Text>
+          <Text style={styles.amount}>₹{(Number(item.grocery_total) + Number(item.delivery_fee)).toLocaleString('en-IN')}</Text>
+        </View>
+      )}
+      {item.service_type === 'catering' && (
+        <View style={styles.totalRow}>
+          <Text style={styles.muted}>Catering quote</Text>
+          <Text style={styles.amount}>₹{Number(item.grocery_total).toLocaleString('en-IN')}</Text>
+        </View>
+      )}
       <View style={styles.totalRow}>
-        <Text style={styles.muted}>Groceries</Text>
-        <Text style={styles.amount}>₹{Number(item.grocery_total).toLocaleString('en-IN')}</Text>
-      </View>
-      <View style={styles.totalRow}>
-        <Text style={styles.muted}>Delivery fee</Text>
-        <Text style={styles.amount}>₹{Number(item.delivery_fee).toLocaleString('en-IN')}</Text>
+        <Text style={styles.muted}>Platform fee</Text>
+        <Text style={styles.fee}>₹{Number(item.platform_fee || 0).toLocaleString('en-IN', { maximumFractionDigits: 2 })}</Text>
       </View>
     </View>
   );
@@ -124,9 +137,10 @@ const styles = StyleSheet.create({
   statusText: { color: '#00C853', fontSize: 12, fontWeight: '800' },
   orderId: { color: '#333333', fontSize: 13, marginTop: 10 },
   date: { color: '#777777', fontSize: 12, marginTop: 4, marginBottom: 14 },
-  totalRow: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 },
-  muted: { color: '#666666', fontSize: 13 },
+  totalRow: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 7 },
+  muted: { color: '#666666', fontSize: 13, flex: 1, paddingRight: 8 },
   amount: { color: '#000000', fontSize: 13, fontWeight: '700' },
+  fee: { color: '#00C853', fontSize: 13, fontWeight: '800' },
   center: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: 30 },
   error: { color: '#D32F2F', textAlign: 'center', fontSize: 14 },
   emptyTitle: { color: '#000000', fontSize: 20, fontWeight: '800' },
