@@ -1,134 +1,113 @@
 import React, { useState } from 'react';
-import {
-  FlatList,
-  Image,
-  Pressable,
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, TextInput, ScrollView, TouchableOpacity, Image, StatusBar } from 'react-native';
 
-const COLORS = {
-  charcoal: '#0B0F0A',
-  primary: '#39FF14',
-  white: '#FFFFFF',
-  muted: '#9BA39A',
-  card: '#111511',
-  input: '#171B17',
-  border: '#283028',
-};
-
-const categories = ['Italian', 'Healthy', 'Indian', 'Desserts'];
-
-const chefs = [
-  { id: '1', name: 'Chef Arjun', rating: '4.9', specialty: 'Indian & North Indian', image: 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&w=320&q=80' },
-  { id: '2', name: 'Chef Marco', rating: '4.8', specialty: 'Italian Cuisine', image: 'https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=320&q=80' },
-  { id: '3', name: 'Chef Priya', rating: '4.9', specialty: 'Healthy & Vegetarian', image: 'https://images.unsplash.com/photo-1600565193348-f74bd3c7ccdf?auto=format&fit=crop&w=320&q=80' },
-];
-
-function DashboardScreen() {
+export default function HomeScreen({ navigation }) {
   const [search, setSearch] = useState('');
-  const [activeTab, setActiveTab] = useState('Home');
-
-  const renderChef = ({ item }) => (
-    <Pressable style={({ pressed }) => [styles.chefCard, pressed && styles.pressed]}>
-      <Image source={{ uri: item.image }} style={styles.chefImage} />
-      <View style={styles.chefInfo}>
-        <Text style={styles.chefName}>{item.name}</Text>
-        <View style={styles.ratingRow}>
-          <Text style={styles.star}>★</Text>
-          <Text style={styles.rating}>{item.rating}</Text>
-          <Text style={styles.ratingScale}> / 5</Text>
-        </View>
-        <Text style={styles.specialty}>{item.specialty}</Text>
-      </View>
-    </Pressable>
-  );
-
-  const navItems = [
-    { label: 'Home', icon: '⌂' },
-    { label: 'Bookings', icon: '▣' },
-    { label: 'Favorites', icon: '♡' },
-    { label: 'Profile', icon: '○' },
-  ];
 
   return (
-    <SafeAreaView style={styles.screen}>
-      <StatusBar barStyle="light-content" backgroundColor={COLORS.charcoal} />
-      <View style={styles.content}>
-        <View style={styles.headerRow}>
-          <Text style={styles.greeting}>Hello, Guest</Text>
-          <Image source={{ uri: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=160&q=80' }} style={styles.avatar} />
+    <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
+      
+      <View style={styles.header}>
+        <View style={styles.locationRow}>
+          <Text style={styles.pinIcon}>📍</Text>
+          <Text style={styles.locationText}>Bengaluru</Text>
+          <Text style={styles.chevronIcon}>⌄</Text>
         </View>
-
-        <View style={styles.searchBar}>
-          <Text style={styles.searchIcon}>⌕</Text>
-          <TextInput value={search} onChangeText={setSearch} placeholder="Search for chefs or cuisines" placeholderTextColor={COLORS.muted} style={styles.searchInput} returnKeyType="search" />
-        </View>
-
-        <View style={styles.sectionHeader}><Text style={styles.sectionTitle}>Top Categories</Text></View>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.categoriesContent}>
-          {categories.map((category) => (
-            <Pressable key={category} style={({ pressed }) => [styles.categoryPill, pressed && styles.pressed]}>
-              <Text style={styles.categoryText}>{category}</Text>
-            </Pressable>
-          ))}
-        </ScrollView>
-
-        <View style={styles.sectionHeader}><Text style={styles.sectionTitle}>Nearby Top Chefs</Text></View>
-        <FlatList data={chefs} keyExtractor={(item) => item.id} renderItem={renderChef} showsVerticalScrollIndicator={false} contentContainerStyle={styles.chefList} />
       </View>
 
+      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+        <View style={styles.searchContainer}>
+          <Text style={styles.searchIcon}>🔍</Text>
+          <TextInput
+            style={styles.searchInput}
+            placeholder="What would you like to cook today?"
+            placeholderTextColor="#9BA39A"
+            value={search}
+            onChangeText={setSearch}
+          />
+        </View>
+
+        <TouchableOpacity style={styles.primaryCard} onPress={() => navigation.navigate('SelectService')}>
+          <View style={styles.cardTextContainer}>
+            <Text style={styles.primaryCardTitle}>Chef Now</Text>
+            <Text style={styles.primaryCardSub}>Get a chef at your home in minutes</Text>
+          </View>
+          <Text style={styles.cardArrow}>›</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.secondaryCard}>
+          <View style={styles.cardTextContainer}>
+            <Text style={styles.secondaryCardTitle}>Book a Chef</Text>
+            <Text style={styles.secondaryCardSub}>For events & occasions</Text>
+          </View>
+          <Text style={styles.secondaryCardArrow}>›</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.secondaryCard}>
+          <View style={styles.cardTextContainer}>
+            <Text style={styles.secondaryCardTitle}>Catering</Text>
+            <Text style={styles.secondaryCardSub}>For parties & events</Text>
+          </View>
+          <Text style={styles.secondaryCardArrow}>›</Text>
+        </TouchableOpacity>
+
+        <View style={styles.promoBanner}>
+          <View style={styles.promoTextContainer}>
+            <Text style={styles.promoTitle}>Fresh Ingredients</Text>
+            <Text style={styles.promoTitle}>Better Meals</Text>
+            <Text style={styles.promoSub}>Order groceries with your chef</Text>
+          </View>
+        </View>
+      </ScrollView>
+
       <View style={styles.bottomNav}>
-        {navItems.map((item) => {
-          const active = activeTab === item.label;
-          return (
-            <Pressable key={item.label} onPress={() => setActiveTab(item.label)} style={({ pressed }) => [styles.navItem, pressed && styles.pressed]}>
-              <Text style={[styles.navIcon, active && styles.navIconActive]}>{item.icon}</Text>
-              <Text style={[styles.navLabel, active && styles.navLabelActive]}>{item.label}</Text>
-            </Pressable>
-          );
-        })}
+        <TouchableOpacity style={styles.navItem}>
+          <Text style={[styles.navIcon, styles.activeNav]}>⌂</Text>
+          <Text style={[styles.navText, styles.activeNav]}>Home</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.navItem}>
+          <Text style={styles.navIcon}>📋</Text>
+          <Text style={styles.navText}>Orders</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.navItem}>
+          <Text style={styles.navIcon}>💬</Text>
+          <Text style={styles.navText}>Chat</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.navItem}>
+          <Text style={styles.navIcon}>👤</Text>
+          <Text style={styles.navText}>Profile</Text>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
 }
 
-export default DashboardScreen;
-
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: COLORS.charcoal },
-  content: { flex: 1, paddingHorizontal: 18 },
-  pressed: { opacity: 0.78 },
-  headerRow: { minHeight: 68, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  greeting: { color: COLORS.white, fontSize: 22, fontWeight: '700' },
-  avatar: { width: 42, height: 42, borderRadius: 21, borderWidth: 1, borderColor: COLORS.border },
-  searchBar: { height: 52, borderRadius: 14, backgroundColor: COLORS.input, borderWidth: 1, borderColor: COLORS.border, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 14 },
-  searchIcon: { color: COLORS.white, fontSize: 26, marginRight: 9, lineHeight: 26 },
-  searchInput: { flex: 1, color: COLORS.white, fontSize: 15 },
-  sectionHeader: { marginTop: 24, marginBottom: 12 },
-  sectionTitle: { color: COLORS.white, fontSize: 18, fontWeight: '700' },
-  categoriesContent: { gap: 10, paddingBottom: 2 },
-  categoryPill: { minHeight: 38, paddingHorizontal: 17, borderRadius: 20, borderWidth: 1, borderColor: COLORS.primary, alignItems: 'center', justifyContent: 'center' },
-  categoryText: { color: COLORS.white, fontSize: 14, fontWeight: '600' },
-  chefList: { paddingBottom: 16 },
-  chefCard: { minHeight: 104, backgroundColor: COLORS.card, borderRadius: 16, marginBottom: 12, padding: 12, flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderColor: '#1D231D' },
-  chefImage: { width: 80, height: 80, borderRadius: 13, backgroundColor: '#202620' },
-  chefInfo: { flex: 1, marginLeft: 14 },
-  chefName: { color: COLORS.white, fontSize: 16, fontWeight: '700', marginBottom: 7 },
-  ratingRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 5 },
-  star: { color: COLORS.primary, fontSize: 15, marginRight: 5 },
-  rating: { color: COLORS.white, fontSize: 14, fontWeight: '700' },
-  ratingScale: { color: COLORS.muted, fontSize: 13 },
-  specialty: { color: COLORS.muted, fontSize: 13 },
-  bottomNav: { minHeight: 72, backgroundColor: '#0E120E', borderTopWidth: 1, borderTopColor: COLORS.border, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around', paddingBottom: 5 },
-  navItem: { minWidth: 72, alignItems: 'center', justifyContent: 'center', paddingVertical: 6 },
-  navIcon: { color: COLORS.muted, fontSize: 22, lineHeight: 25 },
-  navIconActive: { color: COLORS.primary },
-  navLabel: { color: COLORS.muted, fontSize: 11, marginTop: 3 },
-  navLabelActive: { color: COLORS.primary, fontWeight: '700' },
+  container: { flex: 1, backgroundColor: '#FFFFFF' },
+  header: { paddingHorizontal: 20, paddingTop: 10, paddingBottom: 15 },
+  locationRow: { flexDirection: 'row', alignItems: 'center' },
+  pinIcon: { fontSize: 18, color: '#00C853', marginRight: 5 },
+  locationText: { fontSize: 16, fontWeight: '600', color: '#000000' },
+  chevronIcon: { fontSize: 18, color: '#000000', marginLeft: 5, paddingBottom: 5 },
+  scrollContent: { paddingHorizontal: 20, paddingBottom: 20 },
+  searchContainer: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#F5F5F5', borderRadius: 12, paddingHorizontal: 15, height: 50, marginBottom: 25 },
+  searchIcon: { fontSize: 18, marginRight: 10, color: '#9BA39A' },
+  searchInput: { flex: 1, fontSize: 15, color: '#000000' },
+  primaryCard: { backgroundColor: '#00C853', borderRadius: 16, padding: 20, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 15 },
+  primaryCardTitle: { color: '#FFFFFF', fontSize: 18, fontWeight: 'bold', marginBottom: 4 },
+  primaryCardSub: { color: '#FFFFFF', fontSize: 13, opacity: 0.9 },
+  cardArrow: { color: '#FFFFFF', fontSize: 28 },
+  secondaryCard: { backgroundColor: '#FFFFFF', borderRadius: 16, padding: 20, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 15, borderWidth: 1, borderColor: '#E0E0E0' },
+  secondaryCardTitle: { color: '#000000', fontSize: 18, fontWeight: 'bold', marginBottom: 4 },
+  secondaryCardSub: { color: '#666666', fontSize: 13 },
+  secondaryCardArrow: { color: '#00C853', fontSize: 28 },
+  promoBanner: { backgroundColor: '#1A4314', borderRadius: 16, padding: 20, marginTop: 10, minHeight: 120, justifyContent: 'center' },
+  promoTitle: { color: '#FFFFFF', fontSize: 18, fontWeight: 'bold' },
+  promoSub: { color: '#FFFFFF', fontSize: 12, opacity: 0.8, marginTop: 8 },
+  bottomNav: { flexDirection: 'row', justifyContent: 'space-around', paddingVertical: 12, borderTopWidth: 1, borderTopColor: '#EEEEEE', backgroundColor: '#FFFFFF' },
+  navItem: { alignItems: 'center' },
+  navIcon: { fontSize: 20, color: '#9BA39A', marginBottom: 4 },
+  navText: { fontSize: 12, color: '#9BA39A', fontWeight: '500' },
+  activeNav: { color: '#00C853' }
 });
